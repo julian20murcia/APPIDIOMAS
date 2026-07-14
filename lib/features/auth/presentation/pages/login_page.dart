@@ -1,14 +1,13 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'dart:math' as math;
+
+import 'package:flutter/material.dart';
 
 import '../../../../core/data/worlds_data.dart';
+import '../../../../core/models/world.dart';
 import '../../../../core/theme/brand.dart';
 import '../../../../features/shell/app_shell.dart';
-import '../../../../shared/painters/learning_motif_painter.dart';
-import '../../../../shared/widgets/learning_background.dart';
-import '../widgets/login_dots.dart';
+import '../../../../shared/widgets/logo_mark.dart';
 import '../widgets/login_form_panel.dart';
-import '../widgets/login_header.dart';
-import '../widgets/login_world_carousel.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,10 +17,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
-  late final PageController _pageController;
   late final AnimationController _entryCtrl;
   late final AnimationController _floatCtrl;
-  late final AnimationController _pulseCtrl;
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
 
@@ -33,25 +30,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _pageController = PageController(
-      viewportFraction: 0.62,
-      initialPage: 0,
-    );
-
     _entryCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 850),
+      duration: const Duration(milliseconds: 720),
     )..forward();
 
     _floatCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 5200),
+      duration: const Duration(milliseconds: 6200),
     )..repeat();
-
-    _pulseCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1650),
-    )..repeat(reverse: true);
 
     _emailController = TextEditingController(text: 'estudiante@app.com');
     _passwordController = TextEditingController(text: '123456');
@@ -61,19 +48,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   void _startWorldAutoPlay() {
     Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 3));
+      await Future.delayed(const Duration(seconds: 5));
 
       if (!mounted) return false;
 
-      final next = (current + 1) % worlds.length;
-
-      if (_pageController.hasClients) {
-        await _pageController.animateToPage(
-          next,
-          duration: const Duration(milliseconds: 850),
-          curve: Curves.easeOutCubic,
-        );
-      }
+      setState(() {
+        current = (current + 1) % worlds.length;
+      });
 
       return mounted;
     });
@@ -81,10 +62,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _pageController.dispose();
     _entryCtrl.dispose();
     _floatCtrl.dispose();
-    _pulseCtrl.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -103,8 +82,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 760),
-        reverseTransitionDuration: const Duration(milliseconds: 420),
+        transitionDuration: const Duration(milliseconds: 680),
+        reverseTransitionDuration: const Duration(milliseconds: 380),
         pageBuilder: (_, animation, __) {
           final curved = CurvedAnimation(
             parent: animation,
@@ -133,27 +112,29 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     final bottom = media.padding.bottom;
     final keyboard = media.viewInsets.bottom;
 
-    final isSmall = height < 760;
-    final currentWorld = worlds[current];
+    final keyboardOpen = keyboard > 0;
+    final compact = height < 820 || keyboardOpen;
+    final veryCompact = height < 730 || keyboardOpen;
+    final selectedWorld = worlds[current];
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      backgroundColor: Brand.bgDeep,
       body: AnimatedBuilder(
         animation: Listenable.merge([
           _entryCtrl,
           _floatCtrl,
-          _pulseCtrl,
         ]),
         builder: (context, _) {
           final entry = Curves.easeOutCubic.transform(_entryCtrl.value);
 
           return Stack(
             children: [
-              const LearningBackground(),
-
               Positioned.fill(
                 child: CustomPaint(
-                  painter: LearningMotifPainter(t: _floatCtrl.value),
+                  painter: _GameCleanBackgroundPainter(
+                    t: _floatCtrl.value,
+                  ),
                 ),
               ),
 
@@ -166,65 +147,59 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       padding: EdgeInsets.fromLTRB(
                         22,
-                        isSmall ? 12 : 18,
+                        veryCompact ? 8 : 14,
                         22,
-                        bottom + keyboard + 20,
+                        bottom + keyboard + 16,
                       ),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
                           minHeight: constraints.maxHeight -
                               bottom -
                               keyboard -
-                              (isSmall ? 12 : 18),
+                              16,
                         ),
                         child: Transform.translate(
-                          offset: Offset(0, 24 * (1 - entry)),
+                          offset: Offset(0, 18 * (1 - entry)),
                           child: Opacity(
                             opacity: entry,
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SizedBox(height: isSmall ? 4 : 12),
-
-                                const LoginHeader(),
-
-                                SizedBox(height: isSmall ? 18 : 24),
-
-                                LoginWorldCarousel(
-                                  pageController: _pageController,
-                                  current: current,
-                                  floatValue: _floatCtrl.value,
-                                  onChanged: (i) {
-                                    if (current == i) return;
-                                    setState(() => current = i);
-                                  },
+                                _TopBrandBlock(
+                                  compact: compact,
                                 ),
 
-                                const SizedBox(height: 10),
+                                SizedBox(height: veryCompact ? 14 : 18),
 
-                                LoginDots(
-                                  current: current,
-                                  total: worlds.length,
-                                ),
+                                if (!keyboardOpen) ...[
+                                  _WorldGameCard(
+                                    world: selectedWorld,
+                                    compact: compact,
+                                    veryCompact: veryCompact,
+                                    t: _floatCtrl.value,
+                                  ),
 
-                                SizedBox(height: isSmall ? 14 : 18),
+                                  SizedBox(height: veryCompact ? 10 : 12),
 
-                                _ActiveWorldInfoCard(
-                                  language: currentWorld.language,
-                                  city: currentWorld.city,
-                                  flag: currentWorld.flag,
-                                  hello: currentWorld.hello,
-                                  subtitle: currentWorld.safeSubtitle,
-                                  hint: currentWorld.safeLoginHint,
-                                  pulse: _pulseCtrl.value,
-                                ),
+                                  _FlagSelector(
+                                    current: current,
+                                    onSelected: (index) {
+                                      setState(() => current = index);
+                                    },
+                                  ),
 
-                                SizedBox(height: isSmall ? 18 : 24),
+                                  SizedBox(height: veryCompact ? 14 : 18),
+                                ] else ...[
+                                  _WorldMiniHeader(world: selectedWorld),
+                                  const SizedBox(height: 14),
+                                ],
 
                                 LoginFormPanel(
                                   emailController: _emailController,
                                   passwordController: _passwordController,
                                   obscurePassword: obscurePassword,
                                   loading: loading,
+                                  compact: compact,
                                   onTogglePassword: () {
                                     setState(() {
                                       obscurePassword = !obscurePassword;
@@ -232,12 +207,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                   },
                                   onEnter: _enter,
                                 ),
-
-                                SizedBox(height: isSmall ? 14 : 18),
-
-                                const _LoginTerms(),
-
-                                SizedBox(height: isSmall ? 8 : 12),
                               ],
                             ),
                           ),
@@ -255,169 +224,497 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 }
 
-class _ActiveWorldInfoCard extends StatelessWidget {
-  final String language;
-  final String city;
-  final String flag;
-  final String hello;
-  final String subtitle;
-  final String hint;
-  final double pulse;
+class _TopBrandBlock extends StatelessWidget {
+  final bool compact;
 
-  const _ActiveWorldInfoCard({
-    required this.language,
-    required this.city,
-    required this.flag,
-    required this.hello,
-    required this.subtitle,
-    required this.hint,
-    required this.pulse,
+  const _TopBrandBlock({
+    required this.compact,
   });
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      children: [
+        LogoMark(
+          center: true,
+          size: compact ? 42 : 50,
+        ),
+
+        SizedBox(height: compact ? 8 : 10),
+
+        Text.rich(
+          TextSpan(
+            style: TextStyle(
+              color: Brand.white.withOpacity(0.78),
+              fontSize: compact ? 15 : 16.5,
+              height: 1.15,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.2,
+            ),
+            children: const [
+              TextSpan(text: 'Aprende idiomas '),
+              TextSpan(
+                text: 'jugando',
+                style: TextStyle(
+                  color: Brand.mint,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
+          ),
+          textAlign: TextAlign.center,
+        ),
+
+        if (!compact) ...[
+          const SizedBox(height: 5),
+          Text(
+            'Rutas, niveles y desafíos para avanzar cada día.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Brand.white.withOpacity(0.45),
+              fontSize: 12.5,
+              height: 1.25,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _WorldGameCard extends StatelessWidget {
+  final World world;
+  final bool compact;
+  final bool veryCompact;
+  final double t;
+
+  const _WorldGameCard({
+    required this.world,
+    required this.compact,
+    required this.veryCompact,
+    required this.t,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cardHeight = veryCompact
+        ? 155.0
+        : compact
+            ? 168.0
+            : 190.0;
+
+    final imageSize = veryCompact
+        ? 142.0
+        : compact
+            ? 158.0
+            : 182.0;
+
+    final imageMove = math.sin(t * math.pi * 2) * 4;
+
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 360),
       switchInCurve: Curves.easeOutCubic,
       switchOutCurve: Curves.easeInCubic,
-      transitionBuilder: (child, animation) {
-        return FadeTransition(
-          opacity: animation,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 0.08),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          ),
-        );
-      },
       child: Container(
-        key: ValueKey('$language-$city'),
+        key: ValueKey(world.id),
+        height: cardHeight,
         width: double.infinity,
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-        decoration: Brand.cardDecoration(
-          opacity: 0.48,
-          radius: Brand.radiusLg,
-          active: true,
-        ).copyWith(
+        padding: EdgeInsets.fromLTRB(
+          compact ? 16 : 18,
+          compact ? 15 : 17,
+          compact ? 12 : 14,
+          compact ? 14 : 16,
+        ),
+        decoration: BoxDecoration(
+          color: Brand.bgPanel.withOpacity(0.58),
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(
+            color: Brand.mint.withOpacity(0.28),
+            width: 1,
+          ),
           boxShadow: [
             BoxShadow(
-              color: Brand.mint.withOpacity(0.10 + pulse * 0.08),
-              blurRadius: 28,
-              spreadRadius: -12,
-              offset: const Offset(0, 14),
+              color: Colors.black.withOpacity(0.28),
+              blurRadius: 30,
+              spreadRadius: -14,
+              offset: const Offset(0, 20),
             ),
           ],
         ),
-        child: Row(
-          children: [
-            Container(
-              width: 54,
-              height: 54,
-              decoration: BoxDecoration(
-                color: Brand.bgDeep.withOpacity(0.64),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: Brand.white.withOpacity(0.10),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  flag,
-                  style: const TextStyle(fontSize: 26),
-                ),
-              ),
-            ),
-
-            const SizedBox(width: 14),
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$language · $city',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Brand.white,
-                      fontSize: 16.5,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: -0.2,
-                    ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(28),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned(
+                right: -42,
+                top: -52,
+                child: Container(
+                  width: 170,
+                  height: 170,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Brand.cyan.withOpacity(0.08),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    hint.isNotEmpty ? hint : subtitle,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Brand.white.withOpacity(0.58),
-                      fontSize: 12.7,
-                      height: 1.25,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(width: 12),
-
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
-              decoration: BoxDecoration(
-                color: Brand.mint,
-                borderRadius: Brand.radiusPill,
-                boxShadow: Brand.glowMint,
-              ),
-              child: Text(
-                hello,
-                style: const TextStyle(
-                  color: Brand.bgDeep,
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w900,
                 ),
               ),
-            ),
-          ],
+
+              Positioned(
+                left: -34,
+                bottom: -48,
+                child: Container(
+                  width: 140,
+                  height: 140,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Brand.purple.withOpacity(0.16),
+                  ),
+                ),
+              ),
+
+              Positioned(
+                right: -8,
+                bottom: -12 + imageMove,
+                width: imageSize,
+                child: Image.asset(
+                  world.image,
+                  fit: BoxFit.contain,
+                  filterQuality: FilterQuality.high,
+                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                ),
+              ),
+
+              Positioned(
+                left: 0,
+                top: 0,
+                bottom: 0,
+                right: imageSize * 0.68,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 32,
+                      padding: const EdgeInsets.symmetric(horizontal: 11),
+                      decoration: BoxDecoration(
+                        color: Brand.bgDeep.withOpacity(0.56),
+                        borderRadius: Brand.radiusPill,
+                        border: Border.all(
+                          color: Brand.white.withOpacity(0.10),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            world.flag,
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            world.hello,
+                            style: const TextStyle(
+                              color: Brand.mint,
+                              fontSize: 12.3,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const Spacer(),
+
+                    Text(
+                      world.language,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Brand.white,
+                        fontSize: compact ? 25 : 30,
+                        height: 0.92,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.8,
+                      ),
+                    ),
+
+                    const SizedBox(height: 6),
+
+                    Text(
+                      world.city,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Brand.mint,
+                        fontSize: compact ? 14 : 15.5,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      children: [
+                        _MiniQuestChip(
+                          icon: Icons.star_rounded,
+                          label: 'Nivel 1',
+                        ),
+                        const SizedBox(width: 7),
+                        _MiniQuestChip(
+                          icon: Icons.route_rounded,
+                          label: 'Ruta',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _LoginTerms extends StatelessWidget {
-  const _LoginTerms();
+class _MiniQuestChip extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _MiniQuestChip({
+    required this.icon,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-        style: TextStyle(
-          color: Brand.white.withOpacity(0.50),
-          height: 1.45,
-          fontSize: 12.5,
-          fontWeight: FontWeight.w600,
+    return Container(
+      height: 27,
+      padding: const EdgeInsets.symmetric(horizontal: 9),
+      decoration: BoxDecoration(
+        color: Brand.bgDeep.withOpacity(0.48),
+        borderRadius: Brand.radiusPill,
+        border: Border.all(
+          color: Brand.white.withOpacity(0.08),
         ),
-        children: const [
-          TextSpan(
-            text: 'Al continuar, aceptas nuestros Términos y\n',
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: Brand.mint,
+            size: 13,
           ),
-          TextSpan(
-            text: 'Política de privacidad',
+          const SizedBox(width: 5),
+          Text(
+            label,
             style: TextStyle(
+              color: Brand.white.withOpacity(0.64),
+              fontSize: 10.8,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FlagSelector extends StatelessWidget {
+  final int current;
+  final ValueChanged<int> onSelected;
+
+  const _FlagSelector({
+    required this.current,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 54,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Brand.bgPanel.withOpacity(0.36),
+        borderRadius: Brand.radiusPill,
+        border: Border.all(
+          color: Brand.white.withOpacity(0.075),
+        ),
+      ),
+      child: Row(
+        children: List.generate(worlds.length, (index) {
+          final world = worlds[index];
+          final active = current == index;
+
+          return Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => onSelected(index),
+              child: Center(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 260),
+                  curve: Curves.easeOutCubic,
+                  width: active ? 42 : 36,
+                  height: active ? 42 : 36,
+                  decoration: BoxDecoration(
+                    color: active ? Brand.mint : Brand.bgDeep.withOpacity(0.52),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: active
+                          ? Brand.mint
+                          : Brand.white.withOpacity(0.08),
+                    ),
+                    boxShadow: active ? Brand.glowMint : null,
+                  ),
+                  child: Center(
+                    child: Text(
+                      world.flag,
+                      style: TextStyle(
+                        fontSize: active ? 19 : 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class _WorldMiniHeader extends StatelessWidget {
+  final World world;
+
+  const _WorldMiniHeader({
+    required this.world,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 58,
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: Brand.bgPanel.withOpacity(0.58),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(
+          color: Brand.white.withOpacity(0.10),
+        ),
+      ),
+      child: Row(
+        children: [
+          Text(
+            world.flag,
+            style: const TextStyle(fontSize: 23),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              '${world.language} · ${world.city}',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: Brand.white,
+                fontSize: 15,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          Text(
+            world.hello,
+            style: const TextStyle(
               color: Brand.mint,
+              fontSize: 13,
               fontWeight: FontWeight.w900,
             ),
           ),
         ],
       ),
-      textAlign: TextAlign.center,
     );
+  }
+}
+
+class _GameCleanBackgroundPainter extends CustomPainter {
+  final double t;
+
+  _GameCleanBackgroundPainter({
+    required this.t,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+
+    final bgPaint = Paint()
+      ..shader = const LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Brand.navy,
+          Brand.bgDeep,
+          Brand.bgPanel,
+        ],
+      ).createShader(rect);
+
+    canvas.drawRect(rect, bgPaint);
+
+    canvas.drawCircle(
+      Offset(size.width * 0.50, size.height * 0.18),
+      size.width * 0.44,
+      Paint()..color = Brand.cyan.withOpacity(0.055),
+    );
+
+    canvas.drawCircle(
+      Offset(size.width * 0.02, size.height * 0.92),
+      size.width * 0.42,
+      Paint()..color = Brand.purple.withOpacity(0.17),
+    );
+
+    final routePaint = Paint()
+      ..color = Brand.white.withOpacity(0.04)
+      ..strokeWidth = 1
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    for (int i = 0; i < 4; i++) {
+      final y = size.height * (0.25 + i * 0.18);
+      final move = math.sin((t * math.pi * 2) + i) * 7;
+
+      final path = Path()
+        ..moveTo(-20, y + move)
+        ..quadraticBezierTo(
+          size.width * 0.50,
+          y - 22 - move,
+          size.width + 20,
+          y + move,
+        );
+
+      canvas.drawPath(path, routePaint);
+    }
+
+    final dotPaint = Paint()
+      ..color = Brand.mint.withOpacity(0.10)
+      ..style = PaintingStyle.fill;
+
+    for (int i = 0; i < 12; i++) {
+      final x = size.width * ((i * 0.17 + t * 0.07) % 1.0);
+      final y = size.height * (0.10 + ((i * 0.13) % 0.78));
+      canvas.drawCircle(
+        Offset(x, y),
+        i % 3 == 0 ? 2.7 : 1.8,
+        dotPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _GameCleanBackgroundPainter oldDelegate) {
+    return oldDelegate.t != t;
   }
 }

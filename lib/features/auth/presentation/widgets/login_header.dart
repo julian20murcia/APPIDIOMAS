@@ -4,66 +4,74 @@ import '../../../../core/theme/brand.dart';
 import '../../../../shared/widgets/logo_mark.dart';
 
 class LoginHeader extends StatelessWidget {
-  const LoginHeader({super.key});
+  final bool compact;
+
+  const LoginHeader({
+    super.key,
+    this.compact = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
-      duration: const Duration(milliseconds: 780),
+      duration: const Duration(milliseconds: 720),
       curve: Curves.easeOutCubic,
       builder: (context, value, child) {
         return Opacity(
           opacity: value,
           child: Transform.translate(
-            offset: Offset(0, 16 * (1 - value)),
+            offset: Offset(0, 14 * (1 - value)),
             child: child,
           ),
         );
       },
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Stack(
             alignment: Alignment.center,
             clipBehavior: Clip.none,
             children: [
               Positioned(
-                top: -8,
+                top: compact ? -6 : -8,
                 child: Container(
-                  width: 112,
-                  height: 34,
+                  width: compact ? 92 : 112,
+                  height: compact ? 28 : 34,
                   decoration: BoxDecoration(
-                    color: Brand.mint.withOpacity(0.08),
+                    color: Brand.mint.withOpacity(0.07),
                     borderRadius: Brand.radiusPill,
                     border: Border.all(
-                      color: Brand.mint.withOpacity(0.14),
+                      color: Brand.mint.withOpacity(0.12),
                     ),
                   ),
                 ),
               ),
 
-              const LogoMark(
+              LogoMark(
                 center: true,
-                size: 54,
+                size: compact ? 43 : 52,
               ),
 
               Positioned(
-                right: -18,
-                top: -10,
-                child: _HeaderSparkBadge(),
+                right: compact ? -7 : -16,
+                top: compact ? -8 : -10,
+                child: _HeaderSparkBadge(
+                  compact: compact,
+                ),
               ),
             ],
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: compact ? 6 : 9),
 
           Text.rich(
             TextSpan(
               style: TextStyle(
-                fontSize: 17.5,
+                fontSize: compact ? 15.3 : 17,
                 color: Brand.white.withOpacity(0.64),
                 fontWeight: FontWeight.w600,
-                height: 1.18,
+                height: 1.16,
                 letterSpacing: -0.1,
               ),
               children: const [
@@ -80,37 +88,44 @@ class LoginHeader extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
 
-          const SizedBox(height: 14),
-
-          Text(
-            'Elige un idioma, completa misiones y desbloquea nuevas rutas.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Brand.white.withOpacity(0.44),
-              fontSize: 13.2,
-              height: 1.32,
-              fontWeight: FontWeight.w600,
+          if (!compact) ...[
+            const SizedBox(height: 9),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Text(
+                'Completa misiones y desbloquea nuevas rutas.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Brand.white.withOpacity(0.42),
+                  fontSize: 12.8,
+                  height: 1.25,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
-          ),
+          ],
 
-          const SizedBox(height: 16),
+          SizedBox(height: compact ? 9 : 13),
 
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _HeaderChip(
                 icon: Icons.public_rounded,
                 label: '5 mundos',
+                compact: compact,
               ),
-              SizedBox(width: 9),
+              SizedBox(width: compact ? 7 : 9),
               _HeaderChip(
                 icon: Icons.route_rounded,
                 label: 'Rutas',
+                compact: compact,
               ),
-              SizedBox(width: 9),
+              SizedBox(width: compact ? 7 : 9),
               _HeaderChip(
                 icon: Icons.auto_awesome_rounded,
                 label: 'Misiones',
+                compact: compact,
               ),
             ],
           ),
@@ -121,11 +136,19 @@ class LoginHeader extends StatelessWidget {
 }
 
 class _HeaderSparkBadge extends StatelessWidget {
+  final bool compact;
+
+  const _HeaderSparkBadge({
+    required this.compact,
+  });
+
   @override
   Widget build(BuildContext context) {
+    final size = compact ? 29.0 : 33.0;
+
     return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.92, end: 1),
-      duration: const Duration(milliseconds: 1100),
+      tween: Tween(begin: 0.94, end: 1),
+      duration: const Duration(milliseconds: 950),
       curve: Curves.easeInOut,
       builder: (context, value, child) {
         return Transform.scale(
@@ -134,20 +157,20 @@ class _HeaderSparkBadge extends StatelessWidget {
         );
       },
       child: Container(
-        width: 34,
-        height: 34,
+        width: size,
+        height: size,
         decoration: BoxDecoration(
           color: Brand.bgPanel.withOpacity(0.92),
           shape: BoxShape.circle,
           border: Border.all(
-            color: Brand.mint.withOpacity(0.32),
+            color: Brand.mint.withOpacity(0.30),
           ),
           boxShadow: Brand.glowMint,
         ),
-        child: const Icon(
+        child: Icon(
           Icons.auto_awesome_rounded,
           color: Brand.mint,
-          size: 18,
+          size: compact ? 15 : 17,
         ),
       ),
     );
@@ -157,19 +180,23 @@ class _HeaderSparkBadge extends StatelessWidget {
 class _HeaderChip extends StatelessWidget {
   final IconData icon;
   final String label;
+  final bool compact;
 
   const _HeaderChip({
     required this.icon,
     required this.label,
+    required this.compact,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 34,
-      padding: const EdgeInsets.symmetric(horizontal: 11),
+      height: compact ? 29 : 32,
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 9 : 10,
+      ),
       decoration: BoxDecoration(
-        color: Brand.bgPanel.withOpacity(0.54),
+        color: Brand.bgPanel.withOpacity(0.50),
         borderRadius: Brand.radiusPill,
         border: Border.all(
           color: Brand.white.withOpacity(0.09),
@@ -181,14 +208,14 @@ class _HeaderChip extends StatelessWidget {
           Icon(
             icon,
             color: Brand.mint,
-            size: 15,
+            size: compact ? 13 : 14,
           ),
-          const SizedBox(width: 6),
+          SizedBox(width: compact ? 5 : 6),
           Text(
             label,
             style: TextStyle(
-              color: Brand.white.withOpacity(0.74),
-              fontSize: 12,
+              color: Brand.white.withOpacity(0.72),
+              fontSize: compact ? 10.8 : 11.6,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.1,
             ),
