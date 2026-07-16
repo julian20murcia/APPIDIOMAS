@@ -6,7 +6,6 @@ import '../../../../core/data/worlds_data.dart';
 import '../../../../core/models/world.dart';
 import '../../../../core/theme/brand.dart';
 import '../../../../features/shell/app_shell.dart';
-import '../../../../shared/widgets/logo_mark.dart';
 import '../widgets/login_form_panel.dart';
 
 class LoginPage extends StatefulWidget {
@@ -32,32 +31,16 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
     _entryCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 720),
+      duration: const Duration(milliseconds: 680),
     )..forward();
 
     _floatCtrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 6200),
+      duration: const Duration(milliseconds: 7200),
     )..repeat();
 
     _emailController = TextEditingController(text: 'estudiante@app.com');
     _passwordController = TextEditingController(text: '123456');
-
-    _startWorldAutoPlay();
-  }
-
-  void _startWorldAutoPlay() {
-    Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 5));
-
-      if (!mounted) return false;
-
-      setState(() {
-        current = (current + 1) % worlds.length;
-      });
-
-      return mounted;
-    });
   }
 
   @override
@@ -73,7 +56,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     if (loading) return;
 
     FocusScope.of(context).unfocus();
-
     setState(() => loading = true);
 
     await Future.delayed(const Duration(milliseconds: 650));
@@ -108,13 +90,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    final height = media.size.height;
+    final size = media.size;
     final bottom = media.padding.bottom;
     final keyboard = media.viewInsets.bottom;
-
     final keyboardOpen = keyboard > 0;
-    final compact = height < 820 || keyboardOpen;
-    final veryCompact = height < 730 || keyboardOpen;
+
+    final compact = size.height < 920 || keyboardOpen;
+    final veryCompact = size.height < 780 || keyboardOpen;
+
     final selectedWorld = worlds[current];
 
     return Scaffold(
@@ -132,12 +115,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             children: [
               Positioned.fill(
                 child: CustomPaint(
-                  painter: _GameCleanBackgroundPainter(
-                    t: _floatCtrl.value,
-                  ),
+                  painter: _LoginBackgroundPainter(t: _floatCtrl.value),
                 ),
               ),
-
               SafeArea(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
@@ -146,54 +126,39 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       padding: EdgeInsets.fromLTRB(
-                        22,
-                        veryCompact ? 8 : 14,
-                        22,
-                        bottom + keyboard + 16,
+                        18,
+                        veryCompact ? 6 : 12,
+                        18,
+                        bottom + keyboard + 20,
                       ),
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight -
-                              bottom -
-                              keyboard -
-                              16,
+                          minHeight: constraints.maxHeight - bottom,
                         ),
                         child: Transform.translate(
-                          offset: Offset(0, 18 * (1 - entry)),
+                          offset: Offset(0, 12 * (1 - entry)),
                           child: Opacity(
                             opacity: entry,
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                _TopBrandBlock(
-                                  compact: compact,
-                                ),
-
-                                SizedBox(height: veryCompact ? 14 : 18),
-
-                                if (!keyboardOpen) ...[
-                                  _WorldGameCard(
-                                    world: selectedWorld,
+                                if (keyboardOpen)
+                                  _KeyboardHeader(world: selectedWorld)
+                                else ...[
+                                  _HeroSection(
                                     compact: compact,
                                     veryCompact: veryCompact,
                                     t: _floatCtrl.value,
                                   ),
-
-                                  SizedBox(height: veryCompact ? 10 : 12),
-
-                                  _FlagSelector(
+                                  SizedBox(height: compact ? 12 : 14),
+                                  _LanguageSelector(
                                     current: current,
+                                    compact: compact,
                                     onSelected: (index) {
                                       setState(() => current = index);
                                     },
                                   ),
-
-                                  SizedBox(height: veryCompact ? 14 : 18),
-                                ] else ...[
-                                  _WorldMiniHeader(world: selectedWorld),
-                                  const SizedBox(height: 14),
                                 ],
-
+                                SizedBox(height: compact ? 16 : 18),
                                 LoginFormPanel(
                                   emailController: _emailController,
                                   passwordController: _passwordController,
@@ -224,73 +189,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 }
 
-class _TopBrandBlock extends StatelessWidget {
-  final bool compact;
-
-  const _TopBrandBlock({
-    required this.compact,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        LogoMark(
-          center: true,
-          size: compact ? 42 : 50,
-        ),
-
-        SizedBox(height: compact ? 8 : 10),
-
-        Text.rich(
-          TextSpan(
-            style: TextStyle(
-              color: Brand.white.withOpacity(0.78),
-              fontSize: compact ? 15 : 16.5,
-              height: 1.15,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.2,
-            ),
-            children: const [
-              TextSpan(text: 'Aprende idiomas '),
-              TextSpan(
-                text: 'jugando',
-                style: TextStyle(
-                  color: Brand.mint,
-                  fontWeight: FontWeight.w900,
-                ),
-              ),
-            ],
-          ),
-          textAlign: TextAlign.center,
-        ),
-
-        if (!compact) ...[
-          const SizedBox(height: 5),
-          Text(
-            'Rutas, niveles y desafíos para avanzar cada día.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Brand.white.withOpacity(0.45),
-              fontSize: 12.5,
-              height: 1.25,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _WorldGameCard extends StatelessWidget {
-  final World world;
+class _HeroSection extends StatelessWidget {
   final bool compact;
   final bool veryCompact;
   final double t;
 
-  const _WorldGameCard({
-    required this.world,
+  const _HeroSection({
     required this.compact,
     required this.veryCompact,
     required this.t,
@@ -298,250 +202,167 @@ class _WorldGameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardHeight = veryCompact
-        ? 155.0
+    final logoFont = veryCompact
+        ? 48.0
         : compact
-            ? 168.0
-            : 190.0;
+            ? 54.0
+            : 64.0;
 
-    final imageSize = veryCompact
-        ? 142.0
+    final titleFont = veryCompact
+        ? 17.8
         : compact
-            ? 158.0
-            : 182.0;
+            ? 20.0
+            : 22.0;
 
-    final imageMove = math.sin(t * math.pi * 2) * 4;
+    final subtitleFont = veryCompact
+        ? 11.3
+        : compact
+            ? 12.2
+            : 13.2;
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 360),
-      switchInCurve: Curves.easeOutCubic,
-      switchOutCurve: Curves.easeInCubic,
-      child: Container(
-        key: ValueKey(world.id),
-        height: cardHeight,
-        width: double.infinity,
-        padding: EdgeInsets.fromLTRB(
-          compact ? 16 : 18,
-          compact ? 15 : 17,
-          compact ? 12 : 14,
-          compact ? 14 : 16,
-        ),
-        decoration: BoxDecoration(
-          color: Brand.bgPanel.withOpacity(0.58),
-          borderRadius: BorderRadius.circular(32),
-          border: Border.all(
-            color: Brand.mint.withOpacity(0.28),
-            width: 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.28),
-              blurRadius: 30,
-              spreadRadius: -14,
-              offset: const Offset(0, 20),
+    final mapHeight = veryCompact
+        ? 180.0
+        : compact
+            ? 215.0
+            : 250.0;
+
+    return Column(
+      children: [
+        _LingoVerseLogo(fontSize: logoFont),
+        const SizedBox(height: 10),
+        Text.rich(
+          TextSpan(
+            style: TextStyle(
+              color: Brand.white.withOpacity(0.96),
+              fontSize: titleFont,
+              height: 1.05,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -0.35,
             ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(28),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Positioned(
-                right: -42,
-                top: -52,
-                child: Container(
-                  width: 170,
-                  height: 170,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Brand.cyan.withOpacity(0.08),
-                  ),
-                ),
-              ),
-
-              Positioned(
-                left: -34,
-                bottom: -48,
-                child: Container(
-                  width: 140,
-                  height: 140,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Brand.purple.withOpacity(0.16),
-                  ),
-                ),
-              ),
-
-              Positioned(
-                right: -8,
-                bottom: -12 + imageMove,
-                width: imageSize,
-                child: Image.asset(
-                  world.image,
-                  fit: BoxFit.contain,
-                  filterQuality: FilterQuality.high,
-                  errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                ),
-              ),
-
-              Positioned(
-                left: 0,
-                top: 0,
-                bottom: 0,
-                right: imageSize * 0.68,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      height: 32,
-                      padding: const EdgeInsets.symmetric(horizontal: 11),
-                      decoration: BoxDecoration(
-                        color: Brand.bgDeep.withOpacity(0.56),
-                        borderRadius: Brand.radiusPill,
-                        border: Border.all(
-                          color: Brand.white.withOpacity(0.10),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            world.flag,
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            world.hello,
-                            style: const TextStyle(
-                              color: Brand.mint,
-                              fontSize: 12.3,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    Text(
-                      world.language,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Brand.white,
-                        fontSize: compact ? 25 : 30,
-                        height: 0.92,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -0.8,
-                      ),
-                    ),
-
-                    const SizedBox(height: 6),
-
-                    Text(
-                      world.city,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Brand.mint,
-                        fontSize: compact ? 14 : 15.5,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: -0.2,
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
-                    Row(
-                      children: [
-                        _MiniQuestChip(
-                          icon: Icons.star_rounded,
-                          label: 'Nivel 1',
-                        ),
-                        const SizedBox(width: 7),
-                        _MiniQuestChip(
-                          icon: Icons.route_rounded,
-                          label: 'Ruta',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+            children: const [
+              TextSpan(text: 'Aprende idiomas '),
+              TextSpan(
+                text: '.',
+                style: TextStyle(color: Brand.mint),
               ),
             ],
           ),
+          textAlign: TextAlign.center,
         ),
-      ),
+        const SizedBox(height: 6),
+        Text(
+          'Rutas interactivas, niveles y desafíos\npara avanzar cada día.',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Brand.white.withOpacity(0.62),
+            fontSize: subtitleFont,
+            height: 1.18,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        SizedBox(height: compact ? 12 : 14),
+        _HeroMapImage(
+          height: mapHeight,
+          t: t,
+        ),
+      ],
     );
   }
 }
 
-class _MiniQuestChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
+class _LingoVerseLogo extends StatelessWidget {
+  final double fontSize;
 
-  const _MiniQuestChip({
-    required this.icon,
-    required this.label,
+  const _LingoVerseLogo({
+    required this.fontSize,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 27,
-      padding: const EdgeInsets.symmetric(horizontal: 9),
-      decoration: BoxDecoration(
-        color: Brand.bgDeep.withOpacity(0.48),
-        borderRadius: Brand.radiusPill,
-        border: Border.all(
-          color: Brand.white.withOpacity(0.08),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: Brand.mint,
-            size: 13,
-          ),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: TextStyle(
-              color: Brand.white.withOpacity(0.64),
-              fontSize: 10.8,
-              fontWeight: FontWeight.w800,
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: 'Lingo',
+              style: TextStyle(
+                color: Brand.white,
+                fontSize: fontSize,
+                height: 0.95,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -2.2,
+              ),
             ),
-          ),
-        ],
+            TextSpan(
+              text: 'Verse',
+              style: TextStyle(
+                color: Brand.mint,
+                fontSize: fontSize,
+                height: 0.95,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -2.2,
+              ),
+            ),
+          ],
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }
 }
 
-class _FlagSelector extends StatelessWidget {
+class _HeroMapImage extends StatelessWidget {
+  final double height;
+  final double t;
+
+  const _HeroMapImage({
+    required this.height,
+    required this.t,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final floatY = math.sin(t * math.pi * 2) * 2.0;
+
+    return SizedBox(
+      height: height,
+      width: double.infinity,
+      child: Transform.translate(
+        offset: Offset(0, floatY),
+        child: Image.asset(
+          'assets/art/ui/login_hero_map.png',
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.high,
+          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+        ),
+      ),
+    );
+  }
+}
+
+class _LanguageSelector extends StatelessWidget {
   final int current;
+  final bool compact;
   final ValueChanged<int> onSelected;
 
-  const _FlagSelector({
+  const _LanguageSelector({
     required this.current,
+    required this.compact,
     required this.onSelected,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 54,
+      height: compact ? 50 : 58,
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
-        color: Brand.bgPanel.withOpacity(0.36),
+        color: Brand.bgPanel.withOpacity(0.38),
         borderRadius: Brand.radiusPill,
         border: Border.all(
-          color: Brand.white.withOpacity(0.075),
+          color: Brand.white.withOpacity(0.14),
         ),
       ),
       child: Row(
@@ -553,30 +374,76 @@ class _FlagSelector extends StatelessWidget {
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () => onSelected(index),
-              child: Center(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 260),
-                  curve: Curves.easeOutCubic,
-                  width: active ? 42 : 36,
-                  height: active ? 42 : 36,
-                  decoration: BoxDecoration(
-                    color: active ? Brand.mint : Brand.bgDeep.withOpacity(0.52),
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: active
-                          ? Brand.mint
-                          : Brand.white.withOpacity(0.08),
-                    ),
-                    boxShadow: active ? Brand.glowMint : null,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeOutCubic,
+                height: compact ? 36 : 44,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 2,
+                  vertical: 6,
+                ),
+                padding: EdgeInsets.symmetric(horizontal: active ? 6 : 2),
+                decoration: BoxDecoration(
+                  color: active
+                      ? Brand.bgPanel.withOpacity(0.92)
+                      : Colors.transparent,
+                  borderRadius: Brand.radiusPill,
+                  border: Border.all(
+                    color: active
+                        ? Brand.mint.withOpacity(0.90)
+                        : Colors.transparent,
+                    width: active ? 1.15 : 1,
                   ),
-                  child: Center(
-                    child: Text(
-                      world.flag,
-                      style: TextStyle(
-                        fontSize: active ? 19 : 16,
+                  boxShadow: active
+                      ? [
+                          BoxShadow(
+                            color: Brand.mint.withOpacity(0.18),
+                            blurRadius: 16,
+                            spreadRadius: -10,
+                            offset: const Offset(0, 7),
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: compact ? 22 : 26,
+                      height: compact ? 22 : 26,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Brand.bgDeep.withOpacity(0.54),
+                        border: Border.all(
+                          color: Brand.white.withOpacity(0.15),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          world.flag,
+                          style: TextStyle(fontSize: compact ? 12 : 14),
+                        ),
                       ),
                     ),
-                  ),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          world.language,
+                          maxLines: 1,
+                          style: TextStyle(
+                            color: active
+                                ? Brand.mint
+                                : Brand.white.withOpacity(0.76),
+                            fontSize: compact ? 10.5 : 12.4,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.08,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -587,50 +454,37 @@ class _FlagSelector extends StatelessWidget {
   }
 }
 
-class _WorldMiniHeader extends StatelessWidget {
+class _KeyboardHeader extends StatelessWidget {
   final World world;
 
-  const _WorldMiniHeader({
+  const _KeyboardHeader({
     required this.world,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 58,
+      height: 64,
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
-        color: Brand.bgPanel.withOpacity(0.58),
+        color: Brand.bgPanel.withOpacity(0.60),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: Brand.white.withOpacity(0.10),
+          color: Brand.white.withOpacity(0.12),
         ),
       ),
       child: Row(
         children: [
+          const _LingoVerseLogo(fontSize: 24),
+          const Spacer(),
+          Text(world.flag, style: const TextStyle(fontSize: 22)),
+          const SizedBox(width: 8),
           Text(
-            world.flag,
-            style: const TextStyle(fontSize: 23),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              '${world.language} · ${world.city}',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Brand.white,
-                fontSize: 15,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-          ),
-          Text(
-            world.hello,
+            world.language,
             style: const TextStyle(
               color: Brand.mint,
-              fontSize: 13,
+              fontSize: 13.5,
               fontWeight: FontWeight.w900,
             ),
           ),
@@ -640,10 +494,10 @@ class _WorldMiniHeader extends StatelessWidget {
   }
 }
 
-class _GameCleanBackgroundPainter extends CustomPainter {
+class _LoginBackgroundPainter extends CustomPainter {
   final double t;
 
-  _GameCleanBackgroundPainter({
+  _LoginBackgroundPainter({
     required this.t,
   });
 
@@ -665,56 +519,87 @@ class _GameCleanBackgroundPainter extends CustomPainter {
     canvas.drawRect(rect, bgPaint);
 
     canvas.drawCircle(
-      Offset(size.width * 0.50, size.height * 0.18),
-      size.width * 0.44,
-      Paint()..color = Brand.cyan.withOpacity(0.055),
+      Offset(size.width * 0.78, size.height * 0.10),
+      size.width * 0.30,
+      Paint()..color = Brand.cyan.withOpacity(0.05),
     );
 
     canvas.drawCircle(
-      Offset(size.width * 0.02, size.height * 0.92),
-      size.width * 0.42,
-      Paint()..color = Brand.purple.withOpacity(0.17),
+      Offset(size.width * 0.47, size.height * 0.18),
+      size.width * 0.40,
+      Paint()..color = Brand.cyan.withOpacity(0.065),
     );
 
-    final routePaint = Paint()
-      ..color = Brand.white.withOpacity(0.04)
-      ..strokeWidth = 1
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
+    canvas.drawCircle(
+      Offset(size.width * 0.06, size.height * 0.92),
+      size.width * 0.42,
+      Paint()..color = Brand.purple.withOpacity(0.18),
+    );
 
-    for (int i = 0; i < 4; i++) {
-      final y = size.height * (0.25 + i * 0.18);
-      final move = math.sin((t * math.pi * 2) + i) * 7;
-
-      final path = Path()
-        ..moveTo(-20, y + move)
-        ..quadraticBezierTo(
-          size.width * 0.50,
-          y - 22 - move,
-          size.width + 20,
-          y + move,
-        );
-
-      canvas.drawPath(path, routePaint);
-    }
-
-    final dotPaint = Paint()
-      ..color = Brand.mint.withOpacity(0.10)
+    final starPaint = Paint()
+      ..color = Brand.white.withOpacity(0.38)
       ..style = PaintingStyle.fill;
 
-    for (int i = 0; i < 12; i++) {
-      final x = size.width * ((i * 0.17 + t * 0.07) % 1.0);
-      final y = size.height * (0.10 + ((i * 0.13) % 0.78));
+    final mintStarPaint = Paint()
+      ..color = Brand.mint.withOpacity(0.18)
+      ..style = PaintingStyle.fill;
+
+    for (int i = 0; i < 18; i++) {
+      final x = size.width * ((i * 0.137 + t * 0.030) % 1.0);
+      final y = size.height * (0.05 + ((i * 0.173) % 0.84));
+      final r = i % 4 == 0 ? 1.4 : 0.82;
+
       canvas.drawCircle(
         Offset(x, y),
-        i % 3 == 0 ? 2.7 : 1.8,
-        dotPaint,
+        r,
+        i % 3 == 0 ? mintStarPaint : starPaint,
       );
     }
+
+    final orbitPaint = Paint()
+      ..color = Brand.white.withOpacity(0.08)
+      ..strokeWidth = 1
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+    final orbitPath = Path()
+      ..moveTo(size.width * 0.02, size.height * 0.205)
+      ..quadraticBezierTo(
+        size.width * 0.20,
+        size.height * 0.12,
+        size.width * 0.44,
+        size.height * 0.18,
+      );
+
+    canvas.drawPath(orbitPath, orbitPaint);
+
+    final planePaint = Paint()
+      ..color = Brand.cyan.withOpacity(0.36)
+      ..strokeWidth = 1.7
+      ..strokeCap = StrokeCap.round;
+
+    final px = size.width * (0.18 + math.sin(t * math.pi * 2) * 0.014);
+    final py = size.height * 0.17;
+
+    canvas.drawLine(
+      Offset(px - 10, py + 5),
+      Offset(px + 11, py - 5),
+      planePaint,
+    );
+    canvas.drawLine(
+      Offset(px + 3, py - 3),
+      Offset(px + 10, py + 6),
+      planePaint,
+    );
+    canvas.drawLine(
+      Offset(px - 1, py + 2),
+      Offset(px - 9, py - 2),
+      planePaint,
+    );
   }
 
   @override
-  bool shouldRepaint(covariant _GameCleanBackgroundPainter oldDelegate) {
+  bool shouldRepaint(covariant _LoginBackgroundPainter oldDelegate) {
     return oldDelegate.t != t;
   }
 }

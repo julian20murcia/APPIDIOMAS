@@ -17,7 +17,7 @@ const worlds = <World>[
     image: 'assets/art/worlds/london.png',
     bubbleImage: 'assets/art/bubbles/hello.png',
     backgroundAsset: 'assets/art/worlds/london.png',
-    landmarkAsset: 'assets/art/worlds/london.png',
+    landmarkAsset: 'assets/art/landmarks/01_ingles_estatua_libertad.png',
     secondaryAsset: 'assets/art/decor/lamp.png',
     levels: ['A1', 'A2', 'B1', 'B2', 'C1'],
     keywords: [
@@ -44,6 +44,7 @@ const worlds = <World>[
       'De compras',
     ],
   ),
+
   World(
     id: 'italian',
     language: 'Italiano',
@@ -60,7 +61,7 @@ const worlds = <World>[
     image: 'assets/art/worlds/italy.png',
     bubbleImage: 'assets/art/bubbles/ciao.png',
     backgroundAsset: 'assets/art/worlds/italy.png',
-    landmarkAsset: 'assets/art/worlds/italy.png',
+    landmarkAsset: 'assets/art/landmarks/02_italiano_coliseo.png',
     secondaryAsset: 'assets/art/decor/sparkles.png',
     levels: ['A1', 'A2', 'B1', 'B2', 'C1'],
     keywords: [
@@ -86,6 +87,7 @@ const worlds = <World>[
       'Compras y precios',
     ],
   ),
+
   World(
     id: 'portuguese',
     language: 'Portugués',
@@ -102,7 +104,7 @@ const worlds = <World>[
     image: 'assets/art/worlds/portugal.png',
     bubbleImage: 'assets/art/bubbles/ola.png',
     backgroundAsset: 'assets/art/worlds/portugal.png',
-    landmarkAsset: 'assets/art/worlds/portugal.png',
+    landmarkAsset: 'assets/art/landmarks/03_portugues_cristo_redentor.png',
     secondaryAsset: 'assets/art/decor/cloud.png',
     levels: ['A1', 'A2', 'B1', 'B2', 'C1'],
     keywords: [
@@ -128,6 +130,7 @@ const worlds = <World>[
       'Reto Lisboa',
     ],
   ),
+
   World(
     id: 'french',
     language: 'Francés',
@@ -144,7 +147,7 @@ const worlds = <World>[
     image: 'assets/art/worlds/france.png',
     bubbleImage: 'assets/art/bubbles/salut.png',
     backgroundAsset: 'assets/art/worlds/france.png',
-    landmarkAsset: 'assets/art/worlds/france.png',
+    landmarkAsset: 'assets/art/landmarks/04_frances_torre_eiffel.png',
     secondaryAsset: 'assets/art/decor/bench.png',
     levels: ['A1', 'A2', 'B1', 'B2', 'C1'],
     keywords: [
@@ -170,6 +173,7 @@ const worlds = <World>[
       'Reto final',
     ],
   ),
+
   World(
     id: 'german',
     language: 'Alemán',
@@ -186,7 +190,7 @@ const worlds = <World>[
     image: 'assets/art/worlds/germany.png',
     bubbleImage: 'assets/art/bubbles/hallo.png',
     backgroundAsset: 'assets/art/worlds/germany.png',
-    landmarkAsset: 'assets/art/worlds/germany.png',
+    landmarkAsset: 'assets/art/landmarks/05_aleman_puerta_brandeburgo.png',
     secondaryAsset: 'assets/art/decor/tree.png',
     levels: ['A1', 'A2', 'B1', 'B2', 'C1'],
     keywords: [
