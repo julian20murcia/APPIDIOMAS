@@ -17,15 +17,85 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  int index = 0;
-  World selected = worlds.first;
-  String level = 'B1';
+  static const int _homeIndex = 0;
+  static const int _courseIndex = 1;
+  static const int _progressIndex = 2;
+  static const int _profileIndex = 3;
+  static const int _worldsIndex = 4;
 
-  void openWorld(World w) {
+  int index = _homeIndex;
+
+  late World selected;
+  String level = 'A1';
+
+  @override
+  void initState() {
+    super.initState();
+
+    selected = worlds.firstWhere(
+      (world) => world.id == 'english',
+      orElse: () => worlds.first,
+    );
+  }
+
+  void _goHome() {
+    setState(() => index = _homeIndex);
+  }
+
+  void _goCourseMap() {
+    setState(() => index = _courseIndex);
+  }
+
+  void _goProgress() {
+    setState(() => index = _progressIndex);
+  }
+
+  void _goProfile() {
+    setState(() => index = _profileIndex);
+  }
+
+  void _goWorlds() {
+    setState(() => index = _worldsIndex);
+  }
+
+  void _openWorld(World world) {
     setState(() {
-      selected = w;
-      index = 1;
+      selected = world;
+      level = world.id == 'english' ? 'A1' : level;
+      index = _courseIndex;
     });
+  }
+
+  void _selectWorldAndLevel(World world, String selectedLevel) {
+    setState(() {
+      selected = world;
+      level = selectedLevel;
+      index = _courseIndex;
+    });
+  }
+
+  void _handleBottomNavTap(int navIndex) {
+    switch (navIndex) {
+      case 0:
+        _goHome();
+        break;
+      case 1:
+        _goCourseMap();
+        break;
+      case 2:
+        _goProgress();
+        break;
+      case 3:
+        _goProfile();
+        break;
+      default:
+        _goHome();
+    }
+  }
+
+  int get _bottomNavIndex {
+    if (index == _worldsIndex) return _courseIndex;
+    return index;
   }
 
   @override
@@ -34,38 +104,44 @@ class _AppShellState extends State<AppShell> {
       HomePage(
         world: selected,
         level: level,
-        onWorldTap: openWorld,
-        goMap: () => setState(() => index = 1),
+        onWorldTap: _openWorld,
+        goMap: _goCourseMap,
       ),
+
       CourseMapPage(
         world: selected,
         level: level,
-        onChangeWorld: () => setState(() => index = 4),
+        onChangeWorld: _goWorlds,
       ),
-      ProgressPage(world: selected),
+
+      ProgressPage(
+        world: selected,
+      ),
+
       const ProfilePage(),
+
       WorldsPage(
         selected: selected,
         level: level,
-        onSelect: (w, l) => setState(() {
-          selected = w;
-          level = l;
-          index = 1;
-        }),
+        onSelect: _selectWorldAndLevel,
       ),
     ];
 
     return Scaffold(
       body: Stack(
         children: [
-          IndexedStack(index: index, children: pages),
+          IndexedStack(
+            index: index,
+            children: pages,
+          ),
+
           Positioned(
             left: 18,
             right: 18,
             bottom: MediaQuery.of(context).padding.bottom + 12,
             child: BrandBottomNav(
-              index: index == 4 ? 1 : index,
-              onTap: (i) => setState(() => index = i),
+              index: _bottomNavIndex,
+              onTap: _handleBottomNavTap,
             ),
           ),
         ],

@@ -1,0 +1,134 @@
+{
+  "project_info": {
+    "project_number": "179793628918",
+    "project_id": "vecinow-9a495",
+    "storage_bucket": "vecinow-9a495.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179793628918:android:224dea093ce6d654c266d7",
+        "android_client_info": {
+          "package_name": "com.bold.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "179793628918-m2auauegn49j0gokusj551gp8lq8qst1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7xHftHnGNErSIKyixbewolanGzNTG0Fs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "179793628918-m2auauegn49j0gokusj551gp8lq8qst1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179793628918:android:bbd9e12499735ea2c266d7",
+        "android_client_info": {
+          "package_name": "com.evolcorp.appidiomas"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "179793628918-m2auauegn49j0gokusj551gp8lq8qst1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7xHftHnGNErSIKyixbewolanGzNTG0Fs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "179793628918-m2auauegn49j0gokusj551gp8lq8qst1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179793628918:android:f858e6935a1e8433c266d7",
+        "android_client_info": {
+          "package_name": "com.example.ds160"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "179793628918-m2auauegn49j0gokusj551gp8lq8qst1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7xHftHnGNErSIKyixbewolanGzNTG0Fs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "179793628918-m2auauegn49j0gokusj551gp8lq8qst1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179793628918:android:199bd38328d307f4c266d7",
+        "android_client_info": {
+          "package_name": "com.example.vecinow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "179793628918-veb682ep6604frs0dk09f0e6scnql5l8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vecinow",
+            "certificate_hash": "40c803851657b2c83f9907eb87f7106298378cce"
+          }
+        },
+        {
+          "client_id": "179793628918-m2auauegn49j0gokusj551gp8lq8qst1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7xHftHnGNErSIKyixbewolanGzNTG0Fs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "179793628918-m2auauegn49j0gokusj551gp8lq8qst1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
