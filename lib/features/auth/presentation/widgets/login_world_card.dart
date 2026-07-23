@@ -385,9 +385,8 @@ class _SafeAssetImage extends StatelessWidget {
   const _SafeAssetImage({
     required this.asset,
     this.width,
-    this.height,
     this.fit = BoxFit.contain,
-  });
+  }) : height = null;
 
   @override
   Widget build(BuildContext context) {
