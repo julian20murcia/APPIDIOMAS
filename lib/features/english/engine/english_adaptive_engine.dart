@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import '../models/english_activity.dart';
+import '../data/english_level_1_profiles.dart';
 import '../models/english_learning_session.dart';
 import '../models/english_lesson.dart';
 import '../services/english_question_history_service.dart';
@@ -18,6 +19,7 @@ class EnglishAdaptiveEngine {
     required EnglishLesson lesson,
     required int attempt,
     int activityCount = 12,
+    bool practice = false,
   }) async {
     final history = await historyService.load(lesson.number);
     final random = math.Random.secure();
@@ -47,22 +49,17 @@ class EnglishAdaptiveEngine {
             ...pool.where((item) => recentIds.contains(item.id)),
           ];
 
-    final selected = _weightedSelection(
+    final selected = _selectPedagogicalSession(
       source: source,
       history: history,
       targetDifficulty: targetDifficulty,
       count: math.min(activityCount, source.length),
       random: random,
+      lessonNumber: lesson.number,
+      practice: practice,
     );
 
-    final diversified = _ensureTypeVariety(
-      selected: selected,
-      fullPool: source,
-      count: math.min(activityCount, source.length),
-      random: random,
-    );
-
-    final randomized = diversified
+    final randomized = selected
         .map((activity) => _randomizeActivity(activity, random))
         .toList();
 
@@ -97,12 +94,137 @@ class EnglishAdaptiveEngine {
     return EnglishDifficulty.easy;
   }
 
+
+  List<EnglishActivity> _selectPedagogicalSession({
+    required List<EnglishActivity> source,
+    required EnglishQuestionHistorySnapshot history,
+    required EnglishDifficulty targetDifficulty,
+    required int count,
+    required math.Random random,
+    required int lessonNumber,
+    required bool practice,
+  }) {
+    // La primera sesión enseña antes de exigir producción. En sesiones
+    // posteriores aumentamos gradualmente completar/escribir y priorizamos
+    // habilidades débiles, siempre dentro del banco de la misma lección.
+    final firstExposure = history.sessionsCompleted == 0;
+    final strongLearner = history.sessionsCompleted > 0 && history.globalAccuracy >= 0.82;
+
+    final profile = englishLevel1ActivityProfiles[lessonNumber];
+    final basePattern = practice
+        ? (profile?.practicePattern ?? const <EnglishActivityType>[])
+        : (profile?.evaluationPattern ?? const <EnglishActivityType>[]);
+
+    final preferredTypes = basePattern.isNotEmpty
+        ? List<EnglishActivityType>.generate(
+            count,
+            (index) => basePattern[index % basePattern.length],
+          )
+        : firstExposure
+            ? <EnglishActivityType>[
+                EnglishActivityType.multipleChoice,
+                EnglishActivityType.listenChoice,
+                EnglishActivityType.speakAnswer,
+                EnglishActivityType.trueFalse,
+                EnglishActivityType.orderWords,
+                EnglishActivityType.fillBlank,
+              ]
+            : strongLearner
+                ? <EnglishActivityType>[
+                    EnglishActivityType.listenChoice,
+                    EnglishActivityType.speakAnswer,
+                    EnglishActivityType.fillBlank,
+                    EnglishActivityType.orderWords,
+                    EnglishActivityType.writeAnswer,
+                    EnglishActivityType.multipleChoice,
+                  ]
+                : <EnglishActivityType>[
+                    EnglishActivityType.multipleChoice,
+                    EnglishActivityType.listenChoice,
+                    EnglishActivityType.fillBlank,
+                    EnglishActivityType.orderWords,
+                    EnglishActivityType.writeAnswer,
+                    EnglishActivityType.speakAnswer,
+                  ];
+
+    final remaining = List<EnglishActivity>.from(source);
+    final result = <EnglishActivity>[];
+    final usedConcepts = <String>{};
+
+    for (final type in preferredTypes) {
+      if (result.length >= count || remaining.isEmpty) break;
+
+      var candidates = remaining.where((item) => item.type == type).toList();
+      if (candidates.isEmpty) continue;
+      final freshConcepts = candidates.where((item) => item.conceptKey.isEmpty || !usedConcepts.contains(item.conceptKey)).toList();
+      if (freshConcepts.isNotEmpty) candidates = freshConcepts;
+
+      final picked = _pickWeightedActivity(
+        candidates: candidates,
+        history: history,
+        targetDifficulty: targetDifficulty,
+        random: random,
+        firstExposure: firstExposure,
+      );
+      result.add(picked);
+      if (picked.conceptKey.isNotEmpty) usedConcepts.add(picked.conceptKey);
+      remaining.removeWhere((item) => item.id == picked.id);
+    }
+
+    if (result.length < count && remaining.isNotEmpty) {
+      final filler = _weightedSelection(
+        source: remaining,
+        history: history,
+        targetDifficulty: firstExposure ? EnglishDifficulty.easy : targetDifficulty,
+        count: count - result.length,
+        random: random,
+        lessonNumber: lessonNumber,
+        practice: practice,
+      );
+      result.addAll(filler);
+    }
+
+    return result.take(count).toList();
+  }
+
+  EnglishActivity _pickWeightedActivity({
+    required List<EnglishActivity> candidates,
+    required EnglishQuestionHistorySnapshot history,
+    required EnglishDifficulty targetDifficulty,
+    required math.Random random,
+    required bool firstExposure,
+  }) {
+    final weights = candidates.map((activity) {
+      var weight = history.weaknessWeight(activity.skill);
+
+      if (firstExposure && activity.difficulty == EnglishDifficulty.hard) {
+        weight *= 0.18;
+      } else if (activity.difficulty == targetDifficulty) {
+        weight *= 1.65;
+      } else if (_difficultyDistance(activity.difficulty, targetDifficulty) == 1) {
+        weight *= 1.1;
+      } else {
+        weight *= 0.65;
+      }
+
+      if (!history.recentQuestionIds.contains(activity.id)) {
+        weight *= 1.35;
+      }
+
+      return weight.clamp(0.05, 10.0).toDouble();
+    }).toList();
+
+    return candidates[_weightedIndex(weights, random)];
+  }
+
   List<EnglishActivity> _weightedSelection({
     required List<EnglishActivity> source,
     required EnglishQuestionHistorySnapshot history,
     required EnglishDifficulty targetDifficulty,
     required int count,
     required math.Random random,
+    required int lessonNumber,
+    required bool practice,
   }) {
     final remaining = List<EnglishActivity>.from(source);
     final selected = <EnglishActivity>[];
@@ -129,7 +251,8 @@ class EnglishAdaptiveEngine {
 
         if (activity.type == EnglishActivityType.writeAnswer ||
             activity.type == EnglishActivityType.orderWords ||
-            activity.type == EnglishActivityType.listenChoice) {
+            activity.type == EnglishActivityType.listenChoice ||
+            activity.type == EnglishActivityType.speakAnswer) {
           weight *= 1.18;
         }
 
@@ -141,58 +264,6 @@ class EnglishAdaptiveEngine {
     }
 
     return selected;
-  }
-
-  List<EnglishActivity> _ensureTypeVariety({
-    required List<EnglishActivity> selected,
-    required List<EnglishActivity> fullPool,
-    required int count,
-    required math.Random random,
-  }) {
-    final result = List<EnglishActivity>.from(selected);
-
-    const desiredTypes = [
-      EnglishActivityType.multipleChoice,
-      EnglishActivityType.listenChoice,
-      EnglishActivityType.orderWords,
-      EnglishActivityType.fillBlank,
-      EnglishActivityType.writeAnswer,
-      EnglishActivityType.trueFalse,
-    ];
-
-    for (final type in desiredTypes) {
-      if (result.any((item) => item.type == type)) continue;
-
-      final candidates = fullPool
-          .where(
-            (item) =>
-                item.type == type &&
-                !result.any((selectedItem) => selectedItem.id == item.id),
-          )
-          .toList();
-
-      if (candidates.isEmpty) continue;
-
-      final replacement = candidates[random.nextInt(candidates.length)];
-
-      if (result.length < count) {
-        result.add(replacement);
-      } else if (result.isNotEmpty) {
-        final duplicateTypeIndex = result.indexWhere((item) {
-          final occurrences = result
-              .where((candidate) => candidate.type == item.type)
-              .length;
-          return occurrences > 2;
-        });
-
-        if (duplicateTypeIndex >= 0) {
-          result[duplicateTypeIndex] = replacement;
-        }
-      }
-    }
-
-    result.shuffle(random);
-    return result.take(count).toList();
   }
 
   EnglishActivity _randomizeActivity(

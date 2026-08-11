@@ -2,9 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/data/worlds_data.dart';
-import '../../../../core/models/world.dart';
-import '../../../../core/theme/brand.dart';
 import '../../../../features/shell/app_shell.dart';
 import '../widgets/login_form_panel.dart';
 
@@ -15,13 +12,14 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
-  late final AnimationController _entryCtrl;
-  late final AnimationController _floatCtrl;
+class _LoginPageState extends State<LoginPage>
+    with TickerProviderStateMixin {
+  late final AnimationController _entryController;
+  late final AnimationController _ambientController;
+
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
 
-  int current = 0;
   bool loading = false;
   bool obscurePassword = true;
 
@@ -29,44 +27,63 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _entryCtrl = AnimationController(
+    _entryController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 680),
+      duration: const Duration(milliseconds: 600),
     )..forward();
 
-    _floatCtrl = AnimationController(
+    _ambientController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 7200),
+      duration: const Duration(seconds: 12),
     )..repeat();
 
-    _emailController = TextEditingController(text: 'estudiante@app.com');
-    _passwordController = TextEditingController(text: '123456');
+    _emailController = TextEditingController(
+      text: 'estudiante@app.com',
+    );
+
+    _passwordController = TextEditingController(
+      text: '123456',
+    );
   }
 
   @override
   void dispose() {
-    _entryCtrl.dispose();
-    _floatCtrl.dispose();
+    _entryController.dispose();
+    _ambientController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void _togglePassword() {
+    setState(() {
+      obscurePassword = !obscurePassword;
+    });
   }
 
   Future<void> _enter() async {
     if (loading) return;
 
     FocusScope.of(context).unfocus();
-    setState(() => loading = true);
 
-    await Future.delayed(const Duration(milliseconds: 650));
+    setState(() {
+      loading = true;
+    });
+
+    await Future.delayed(
+      const Duration(milliseconds: 400),
+    );
 
     if (!mounted) return;
 
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 680),
-        reverseTransitionDuration: const Duration(milliseconds: 380),
-        pageBuilder: (_, animation, __) {
+        transitionDuration: const Duration(milliseconds: 500),
+        pageBuilder: (
+          context,
+          animation,
+          secondaryAnimation,
+        ) {
           final curved = CurvedAnimation(
             parent: animation,
             curve: Curves.easeOutCubic,
@@ -76,7 +93,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             opacity: curved,
             child: ScaleTransition(
               scale: Tween<double>(
-                begin: 0.985,
+                begin: 0.99,
                 end: 1,
               ).animate(curved),
               child: const AppShell(),
@@ -90,95 +107,67 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    final size = media.size;
-    final bottom = media.padding.bottom;
-    final keyboard = media.viewInsets.bottom;
-    final keyboardOpen = keyboard > 0;
 
-    final compact = size.height < 920 || keyboardOpen;
-    final veryCompact = size.height < 780 || keyboardOpen;
+    final width = media.size.width;
+    final height = media.size.height;
+    final keyboardHeight = media.viewInsets.bottom;
 
-    final selectedWorld = worlds[current];
+    final keyboardOpen = keyboardHeight > 0;
+    final compact = height < 780 || width < 380;
+    final wide = width >= 900 && !keyboardOpen;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: Brand.bgDeep,
+      backgroundColor: _LoginColors.ivory,
       body: AnimatedBuilder(
         animation: Listenable.merge([
-          _entryCtrl,
-          _floatCtrl,
+          _entryController,
+          _ambientController,
         ]),
         builder: (context, _) {
-          final entry = Curves.easeOutCubic.transform(_entryCtrl.value);
+          final entry = Curves.easeOutCubic.transform(
+            _entryController.value,
+          );
 
           return Stack(
             children: [
               Positioned.fill(
                 child: CustomPaint(
-                  painter: _LoginBackgroundPainter(t: _floatCtrl.value),
+                  painter: _PremiumBackgroundPainter(
+                    t: _ambientController.value,
+                  ),
                 ),
               ),
+
               SafeArea(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      padding: EdgeInsets.fromLTRB(
-                        18,
-                        veryCompact ? 6 : 12,
-                        18,
-                        bottom + keyboard + 20,
-                      ),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight: constraints.maxHeight - bottom,
-                        ),
-                        child: Transform.translate(
-                          offset: Offset(0, 12 * (1 - entry)),
-                          child: Opacity(
-                            opacity: entry,
-                            child: Column(
-                              children: [
-                                if (keyboardOpen)
-                                  _KeyboardHeader(world: selectedWorld)
-                                else ...[
-                                  _HeroSection(
-                                    compact: compact,
-                                    veryCompact: veryCompact,
-                                    t: _floatCtrl.value,
-                                  ),
-                                  SizedBox(height: compact ? 12 : 14),
-                                  _LanguageSelector(
-                                    current: current,
-                                    compact: compact,
-                                    onSelected: (index) {
-                                      setState(() => current = index);
-                                    },
-                                  ),
-                                ],
-                                SizedBox(height: compact ? 16 : 18),
-                                LoginFormPanel(
-                                  emailController: _emailController,
-                                  passwordController: _passwordController,
-                                  obscurePassword: obscurePassword,
-                                  loading: loading,
-                                  compact: compact,
-                                  onTogglePassword: () {
-                                    setState(() {
-                                      obscurePassword = !obscurePassword;
-                                    });
-                                  },
-                                  onEnter: _enter,
-                                ),
-                              ],
-                            ),
+                child: Opacity(
+                  opacity: entry,
+                  child: Transform.translate(
+                    offset: Offset(
+                      0,
+                      12 * (1 - entry),
+                    ),
+                    child: wide
+                        ? _WideLayout(
+                            emailController: _emailController,
+                            passwordController: _passwordController,
+                            obscurePassword: obscurePassword,
+                            loading: loading,
+                            onTogglePassword: _togglePassword,
+                            onEnter: _enter,
+                          )
+                        : _MobileLayout(
+                            compact: compact,
+                            keyboardOpen: keyboardOpen,
+                            keyboardHeight: keyboardHeight,
+                            emailController: _emailController,
+                            passwordController: _passwordController,
+                            obscurePassword: obscurePassword,
+                            loading: loading,
+                            onTogglePassword: _togglePassword,
+                            onEnter: _enter,
                           ),
-                        ),
-                      ),
-                    );
-                  },
+                  ),
                 ),
               ),
             ],
@@ -189,417 +178,493 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 }
 
-class _HeroSection extends StatelessWidget {
+class _MobileLayout extends StatelessWidget {
   final bool compact;
-  final bool veryCompact;
-  final double t;
+  final bool keyboardOpen;
+  final double keyboardHeight;
 
-  const _HeroSection({
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+
+  final bool obscurePassword;
+  final bool loading;
+
+  final VoidCallback onTogglePassword;
+  final VoidCallback onEnter;
+
+  const _MobileLayout({
     required this.compact,
-    required this.veryCompact,
-    required this.t,
+    required this.keyboardOpen,
+    required this.keyboardHeight,
+    required this.emailController,
+    required this.passwordController,
+    required this.obscurePassword,
+    required this.loading,
+    required this.onTogglePassword,
+    required this.onEnter,
   });
 
   @override
   Widget build(BuildContext context) {
-    final logoFont = veryCompact
-        ? 48.0
-        : compact
-            ? 54.0
-            : 64.0;
+    final media = MediaQuery.of(context);
 
-    final titleFont = veryCompact
-        ? 17.8
-        : compact
-            ? 20.0
-            : 22.0;
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      keyboardDismissBehavior:
+          ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: EdgeInsets.fromLTRB(
+        18,
+        keyboardOpen ? 8 : 14,
+        18,
+        keyboardHeight + media.padding.bottom + 20,
+      ),
+      child: Column(
+        children: [
+          if (keyboardOpen)
+            const _CompactLogo()
+          else
+            _Hero(
+              compact: compact,
+            ),
 
-    final subtitleFont = veryCompact
-        ? 11.3
-        : compact
-            ? 12.2
-            : 13.2;
+          SizedBox(
+            height: keyboardOpen
+                ? 12
+                : compact
+                    ? 18
+                    : 24,
+          ),
 
-    final mapHeight = veryCompact
-        ? 180.0
+          LoginFormPanel(
+            emailController: emailController,
+            passwordController: passwordController,
+            obscurePassword: obscurePassword,
+            loading: loading,
+            compact: compact || keyboardOpen,
+            onTogglePassword: onTogglePassword,
+            onEnter: onEnter,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _WideLayout extends StatelessWidget {
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+
+  final bool obscurePassword;
+  final bool loading;
+
+  final VoidCallback onTogglePassword;
+  final VoidCallback onEnter;
+
+  const _WideLayout({
+    required this.emailController,
+    required this.passwordController,
+    required this.obscurePassword,
+    required this.loading,
+    required this.onTogglePassword,
+    required this.onEnter,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 1100,
+        ),
+        child: Row(
+          children: [
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(40),
+                child: _Hero(
+                  compact: false,
+                ),
+              ),
+            ),
+
+            const SizedBox(width: 30),
+
+            Expanded(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 440,
+                ),
+                child: LoginFormPanel(
+                  emailController: emailController,
+                  passwordController: passwordController,
+                  obscurePassword: obscurePassword,
+                  loading: loading,
+                  compact: false,
+                  onTogglePassword: onTogglePassword,
+                  onEnter: onEnter,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Hero extends StatelessWidget {
+  final bool compact;
+
+  const _Hero({
+    required this.compact,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.sizeOf(context).width;
+
+    final logoWidth = width >= 900
+        ? 350.0
         : compact
-            ? 215.0
-            : 250.0;
+            ? 225.0
+            : 270.0;
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        _LingoVerseLogo(fontSize: logoFont),
-        const SizedBox(height: 10),
-        Text.rich(
-          TextSpan(
-            style: TextStyle(
-              color: Brand.white.withOpacity(0.96),
-              fontSize: titleFont,
-              height: 1.05,
-              fontWeight: FontWeight.w900,
-              letterSpacing: -0.35,
-            ),
-            children: const [
-              TextSpan(text: 'Aprende idiomas '),
-              TextSpan(
-                text: '.',
-                style: TextStyle(color: Brand.mint),
-              ),
-            ],
+        SizedBox(
+          width: logoWidth,
+          child: Image.asset(
+            'assets/art/brand/lingoverse_logo_full.png',
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.high,
+            errorBuilder: (
+              context,
+              error,
+              stackTrace,
+            ) {
+              return const _FallbackLogo();
+            },
           ),
-          textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 6),
+
+        SizedBox(
+          height: compact ? 16 : 22,
+        ),
+
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 32,
+              height: 1,
+              color: _LoginColors.gold.withOpacity(0.45),
+            ),
+            const SizedBox(width: 9),
+            Container(
+              width: 6,
+              height: 6,
+              decoration: const BoxDecoration(
+                color: _LoginColors.gold,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 9),
+            Container(
+              width: 32,
+              height: 1,
+              color: _LoginColors.gold.withOpacity(0.45),
+            ),
+          ],
+        ),
+
+        SizedBox(
+          height: compact ? 15 : 20,
+        ),
+
         Text(
-          'Rutas interactivas, niveles y desafíos\npara avanzar cada día.',
+          'Aprende sin fronteras.',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Brand.white.withOpacity(0.62),
-            fontSize: subtitleFont,
-            height: 1.18,
-            fontWeight: FontWeight.w700,
+            color: _LoginColors.navy,
+            fontSize: compact ? 25 : 30,
+            height: 1.05,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.7,
           ),
         ),
-        SizedBox(height: compact ? 12 : 14),
-        _HeroMapImage(
-          height: mapHeight,
-          t: t,
+
+        SizedBox(
+          height: compact ? 7 : 9,
+        ),
+
+        ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 430,
+          ),
+          child: Text(
+            'Idiomas, cultura y experiencias que te llevan más lejos.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: _LoginColors.slate.withOpacity(0.74),
+              fontSize: compact ? 12.7 : 14,
+              height: 1.4,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ),
       ],
     );
   }
 }
 
-class _LingoVerseLogo extends StatelessWidget {
-  final double fontSize;
-
-  const _LingoVerseLogo({
-    required this.fontSize,
-  });
+class _CompactLogo extends StatelessWidget {
+  const _CompactLogo();
 
   @override
   Widget build(BuildContext context) {
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      child: Text.rich(
-        TextSpan(
-          children: [
-            TextSpan(
-              text: 'Lingo',
-              style: TextStyle(
-                color: Brand.white,
-                fontSize: fontSize,
-                height: 0.95,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -2.2,
-              ),
-            ),
-            TextSpan(
-              text: 'Verse',
-              style: TextStyle(
-                color: Brand.mint,
-                fontSize: fontSize,
-                height: 0.95,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -2.2,
-              ),
-            ),
-          ],
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-}
-
-class _HeroMapImage extends StatelessWidget {
-  final double height;
-  final double t;
-
-  const _HeroMapImage({
-    required this.height,
-    required this.t,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final floatY = math.sin(t * math.pi * 2) * 2.0;
-
-    return SizedBox(
-      height: height,
-      width: double.infinity,
-      child: Transform.translate(
-        offset: Offset(0, floatY),
+    return Center(
+      child: SizedBox(
+        width: 155,
         child: Image.asset(
-          'assets/art/ui/login_hero_map.png',
+          'assets/art/brand/lingoverse_logo_full.png',
           fit: BoxFit.contain,
           filterQuality: FilterQuality.high,
-          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+          errorBuilder: (
+            context,
+            error,
+            stackTrace,
+          ) {
+            return const _FallbackLogo(
+              compact: true,
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class _LanguageSelector extends StatelessWidget {
-  final int current;
+class _FallbackLogo extends StatelessWidget {
   final bool compact;
-  final ValueChanged<int> onSelected;
 
-  const _LanguageSelector({
-    required this.current,
-    required this.compact,
-    required this.onSelected,
+  const _FallbackLogo({
+    this.compact = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: compact ? 50 : 58,
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 6),
-      decoration: BoxDecoration(
-        color: Brand.bgPanel.withOpacity(0.38),
-        borderRadius: Brand.radiusPill,
-        border: Border.all(
-          color: Brand.white.withOpacity(0.14),
-        ),
-      ),
-      child: Row(
-        children: List.generate(worlds.length, (index) {
-          final world = worlds[index];
-          final active = current == index;
-
-          return Expanded(
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => onSelected(index),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.easeOutCubic,
-                height: compact ? 36 : 44,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 2,
-                  vertical: 6,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: active ? 6 : 2),
-                decoration: BoxDecoration(
-                  color: active
-                      ? Brand.bgPanel.withOpacity(0.92)
-                      : Colors.transparent,
-                  borderRadius: Brand.radiusPill,
-                  border: Border.all(
-                    color: active
-                        ? Brand.mint.withOpacity(0.90)
-                        : Colors.transparent,
-                    width: active ? 1.15 : 1,
-                  ),
-                  boxShadow: active
-                      ? [
-                          BoxShadow(
-                            color: Brand.mint.withOpacity(0.18),
-                            blurRadius: 16,
-                            spreadRadius: -10,
-                            offset: const Offset(0, 7),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: compact ? 22 : 26,
-                      height: compact ? 22 : 26,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Brand.bgDeep.withOpacity(0.54),
-                        border: Border.all(
-                          color: Brand.white.withOpacity(0.15),
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          world.flag,
-                          style: TextStyle(fontSize: compact ? 12 : 14),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Flexible(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          world.language,
-                          maxLines: 1,
-                          style: TextStyle(
-                            color: active
-                                ? Brand.mint
-                                : Brand.white.withOpacity(0.76),
-                            fontSize: compact ? 10.5 : 12.4,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: -0.08,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }),
-      ),
-    );
-  }
-}
-
-class _KeyboardHeader extends StatelessWidget {
-  final World world;
-
-  const _KeyboardHeader({
-    required this.world,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 64,
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      decoration: BoxDecoration(
-        color: Brand.bgPanel.withOpacity(0.60),
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: Brand.white.withOpacity(0.12),
-        ),
-      ),
-      child: Row(
+    return Text.rich(
+      TextSpan(
         children: [
-          const _LingoVerseLogo(fontSize: 24),
-          const Spacer(),
-          Text(world.flag, style: const TextStyle(fontSize: 22)),
-          const SizedBox(width: 8),
-          Text(
-            world.language,
-            style: const TextStyle(
-              color: Brand.mint,
-              fontSize: 13.5,
+          TextSpan(
+            text: 'Lingo',
+            style: TextStyle(
+              color: _LoginColors.navy,
+              fontSize: compact ? 24 : 34,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          TextSpan(
+            text: 'Verse',
+            style: TextStyle(
+              color: _LoginColors.gold,
+              fontSize: compact ? 24 : 34,
               fontWeight: FontWeight.w900,
             ),
           ),
         ],
       ),
+      textAlign: TextAlign.center,
     );
   }
 }
 
-class _LoginBackgroundPainter extends CustomPainter {
+class _PremiumBackgroundPainter extends CustomPainter {
   final double t;
 
-  _LoginBackgroundPainter({
+  const _PremiumBackgroundPainter({
     required this.t,
   });
 
   @override
-  void paint(Canvas canvas, Size size) {
+  void paint(
+    Canvas canvas,
+    Size size,
+  ) {
     final rect = Offset.zero & size;
 
-    final bgPaint = Paint()
+    final background = Paint()
       ..shader = const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
         colors: [
-          Brand.navy,
-          Brand.bgDeep,
-          Brand.bgPanel,
+          Color(0xFFFFFEFB),
+          Color(0xFFFAF7F1),
+          Color(0xFFF3E9DB),
         ],
       ).createShader(rect);
 
-    canvas.drawRect(rect, bgPaint);
-
-    canvas.drawCircle(
-      Offset(size.width * 0.78, size.height * 0.10),
-      size.width * 0.30,
-      Paint()..color = Brand.cyan.withOpacity(0.05),
+    canvas.drawRect(
+      rect,
+      background,
     );
 
-    canvas.drawCircle(
-      Offset(size.width * 0.47, size.height * 0.18),
-      size.width * 0.40,
-      Paint()..color = Brand.cyan.withOpacity(0.065),
-    );
-
-    canvas.drawCircle(
-      Offset(size.width * 0.06, size.height * 0.92),
-      size.width * 0.42,
-      Paint()..color = Brand.purple.withOpacity(0.18),
-    );
-
-    final starPaint = Paint()
-      ..color = Brand.white.withOpacity(0.38)
-      ..style = PaintingStyle.fill;
-
-    final mintStarPaint = Paint()
-      ..color = Brand.mint.withOpacity(0.18)
-      ..style = PaintingStyle.fill;
-
-    for (int i = 0; i < 18; i++) {
-      final x = size.width * ((i * 0.137 + t * 0.030) % 1.0);
-      final y = size.height * (0.05 + ((i * 0.173) % 0.84));
-      final r = i % 4 == 0 ? 1.4 : 0.82;
-
-      canvas.drawCircle(
-        Offset(x, y),
-        r,
-        i % 3 == 0 ? mintStarPaint : starPaint,
+    final glowPaint = Paint()
+      ..color = _LoginColors.gold.withOpacity(0.05)
+      ..maskFilter = const MaskFilter.blur(
+        BlurStyle.normal,
+        80,
       );
-    }
 
-    final orbitPaint = Paint()
-      ..color = Brand.white.withOpacity(0.08)
-      ..strokeWidth = 1
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final orbitPath = Path()
-      ..moveTo(size.width * 0.02, size.height * 0.205)
-      ..quadraticBezierTo(
-        size.width * 0.20,
+    canvas.drawCircle(
+      Offset(
+        size.width * 0.78,
         size.height * 0.12,
-        size.width * 0.44,
+      ),
+      size.width * 0.30,
+      glowPaint,
+    );
+
+    final route = Path()
+      ..moveTo(
+        -40,
+        size.height * 0.16,
+      )
+      ..cubicTo(
+        size.width * 0.20,
+        size.height * 0.08,
+        size.width * 0.70,
+        size.height * 0.09,
+        size.width + 40,
         size.height * 0.18,
       );
 
-    canvas.drawPath(orbitPath, orbitPaint);
-
-    final planePaint = Paint()
-      ..color = Brand.cyan.withOpacity(0.36)
-      ..strokeWidth = 1.7
-      ..strokeCap = StrokeCap.round;
-
-    final px = size.width * (0.18 + math.sin(t * math.pi * 2) * 0.014);
-    final py = size.height * 0.17;
-
-    canvas.drawLine(
-      Offset(px - 10, py + 5),
-      Offset(px + 11, py - 5),
-      planePaint,
+    canvas.drawPath(
+      route,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1
+        ..color = _LoginColors.gold.withOpacity(0.11),
     );
-    canvas.drawLine(
-      Offset(px + 3, py - 3),
-      Offset(px + 10, py + 6),
-      planePaint,
+
+    final metrics = route.computeMetrics().toList();
+
+    if (metrics.isNotEmpty) {
+      final metric = metrics.first;
+
+      final tangent = metric.getTangentForOffset(
+        metric.length * ((t * 0.65) % 1),
+      );
+
+      if (tangent != null) {
+        final point = tangent.position;
+
+        final planePaint = Paint()
+          ..color = _LoginColors.gold.withOpacity(0.36)
+          ..strokeWidth = 1.5
+          ..strokeCap = StrokeCap.round;
+
+        canvas.drawLine(
+          Offset(
+            point.dx - 7,
+            point.dy + 3,
+          ),
+          Offset(
+            point.dx + 8,
+            point.dy - 3,
+          ),
+          planePaint,
+        );
+
+        canvas.drawLine(
+          Offset(
+            point.dx + 2,
+            point.dy - 2,
+          ),
+          Offset(
+            point.dx + 7,
+            point.dy + 4,
+          ),
+          planePaint,
+        );
+      }
+    }
+
+    final detailPaint = Paint()
+      ..color = _LoginColors.gold.withOpacity(0.08);
+
+    for (int i = 0; i < 12; i++) {
+      final x = size.width *
+          ((i * 0.181 + t * 0.004) % 1);
+
+      final y = size.height *
+          (0.05 + ((i * 0.227) % 0.88));
+
+      canvas.drawCircle(
+        Offset(x, y),
+        i % 4 == 0 ? 1.1 : 0.6,
+        detailPaint,
+      );
+    }
+
+    _drawCompass(
+      canvas,
+      size,
     );
-    canvas.drawLine(
-      Offset(px - 1, py + 2),
-      Offset(px - 9, py - 2),
-      planePaint,
+  }
+
+  void _drawCompass(
+    Canvas canvas,
+    Size size,
+  ) {
+    final center = Offset(
+      size.width * 0.91,
+      size.height * 0.72,
+    );
+
+    final radius = math.min(
+          size.width,
+          size.height,
+        ) *
+        0.08;
+
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = _LoginColors.navy.withOpacity(0.018);
+
+    canvas.drawCircle(
+      center,
+      radius,
+      paint,
+    );
+
+    canvas.drawCircle(
+      center,
+      radius * 0.55,
+      paint,
     );
   }
 
   @override
-  bool shouldRepaint(covariant _LoginBackgroundPainter oldDelegate) {
+  bool shouldRepaint(
+    covariant _PremiumBackgroundPainter oldDelegate,
+  ) {
     return oldDelegate.t != t;
   }
+}
+
+abstract final class _LoginColors {
+  static const Color ivory =
+      Color(0xFFFAF7F1);
+
+  static const Color navy =
+      Color(0xFF102A43);
+
+  static const Color slate =
+      Color(0xFF627D98);
+
+  static const Color gold =
+      Color(0xFFD9A441);
 }

@@ -9,6 +9,7 @@ import '../../../../shared/widgets/learning_background.dart';
 import '../../../competition/presentation/widgets/competition_launcher_card.dart';
 import '../../../english/data/english_level_1_data.dart';
 import '../../../english/presentation/pages/english_lesson_page.dart';
+import '../../../english/presentation/pages/english_daily_review_page.dart';
 import '../../../english/services/english_progress_service.dart';
 import '../painters/city_silhouette_painter.dart';
 
@@ -141,6 +142,8 @@ class _CourseMapPageState extends State<CourseMapPage>
     final score = (result['score'] as num?)?.toInt() ?? 0;
     final attempts = (result['attempts'] as num?)?.toInt() ?? 1;
     final xp = (result['xp'] as num?)?.toInt() ?? 0;
+    final strengths = (result['strengths'] as List?)?.whereType<String>().toList() ?? const <String>[];
+    final weaknesses = (result['weaknesses'] as List?)?.whereType<String>().toList() ?? const <String>[];
     final completedLesson =
         (result['lessonNumber'] as num?)?.toInt() ?? lessonNumber;
 
@@ -150,6 +153,8 @@ class _CourseMapPageState extends State<CourseMapPage>
       passed: passed,
       attempts: attempts,
       xp: xp,
+      strengths: strengths,
+      weaknesses: weaknesses,
     );
 
     if (!mounted) return;
@@ -171,7 +176,7 @@ class _CourseMapPageState extends State<CourseMapPage>
       );
     } else {
       _showProgressMessage(
-        'Necesitas al menos 70 puntos para desbloquear la siguiente lección.',
+        'Necesitas al menos 80 puntos para desbloquear la siguiente lección.',
         success: false,
       );
     }
@@ -268,6 +273,22 @@ class _CourseMapPageState extends State<CourseMapPage>
                     widget.world.id == 'english',
                 onChangeWorld: widget.onChangeWorld,
               ),
+              if (widget.world.id == 'english' && _completedLessons > 0) ...[
+                SizedBox(height: compact ? 14 : 16),
+                _SmartReviewLauncher(
+                  compact: compact,
+                  completedLessons: _completedLessons,
+                  onTap: () async {
+                    await Navigator.of(context).push<bool>(
+                      MaterialPageRoute(
+                        builder: (_) => EnglishDailyReviewPage(
+                          completedLessons: _completedLessons,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
               SizedBox(height: compact ? 16 : 18),
               _CourseRouteHeader(
                 compact: compact,
@@ -880,7 +901,7 @@ class _CourseRoutePanel extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
             ),
             content: const Text(
-              'Aprueba la lección anterior con mínimo 70 puntos para desbloquear esta.',
+              'Aprueba la lección anterior con mínimo 80 puntos para desbloquear esta.',
               style: TextStyle(
                 color: Brand.white,
                 fontWeight: FontWeight.w800,
@@ -1024,7 +1045,7 @@ class _RouteIntroCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Aprueba con mínimo 70 puntos para avanzar por las $totalLessons lecciones.',
+                  'Aprueba con mínimo 80 puntos para avanzar por las $totalLessons lecciones.',
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -1466,6 +1487,90 @@ class _ProgressLine extends StatelessWidget {
             borderRadius: BorderRadius.circular(999),
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class _SmartReviewLauncher extends StatelessWidget {
+  final bool compact;
+  final int completedLessons;
+  final VoidCallback onTap;
+
+  const _SmartReviewLauncher({
+    required this.compact,
+    required this.completedLessons,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(compact ? 16 : 18),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF132E45), Color(0xFF0C1C31)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: Brand.mint.withOpacity(.24)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Brand.mint.withOpacity(.14),
+              borderRadius: BorderRadius.circular(17),
+            ),
+            child: const Icon(Icons.psychology_alt_rounded, color: Brand.mint),
+          ),
+          const SizedBox(width: 13),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'REPASO INTELIGENTE',
+                  style: TextStyle(
+                    color: Brand.mint,
+                    fontSize: 10.2,
+                    letterSpacing: .85,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'No olvides lo que ya aprendiste',
+                  style: TextStyle(
+                    color: Brand.white,
+                    fontSize: 15.5,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  '$completedLessons lecciones alimentan tu repaso espaciado.',
+                  style: TextStyle(
+                    color: Brand.white.withOpacity(.48),
+                    fontSize: 11.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton.filled(
+            onPressed: onTap,
+            style: IconButton.styleFrom(
+              backgroundColor: Brand.mint,
+              foregroundColor: Brand.bgDeep,
+            ),
+            icon: const Icon(Icons.arrow_forward_rounded),
+          ),
+        ],
       ),
     );
   }

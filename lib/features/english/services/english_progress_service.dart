@@ -9,6 +9,8 @@ class EnglishLessonResult {
   final int xp;
   final bool passed;
   final String? completedAt;
+  final List<String> strengths;
+  final List<String> weaknesses;
 
   const EnglishLessonResult({
     required this.lessonNumber,
@@ -17,6 +19,8 @@ class EnglishLessonResult {
     required this.xp,
     required this.passed,
     this.completedAt,
+    this.strengths = const [],
+    this.weaknesses = const [],
   });
 
   factory EnglishLessonResult.fromJson(Map<String, dynamic> json) {
@@ -27,6 +31,8 @@ class EnglishLessonResult {
       xp: (json['xp'] as num?)?.toInt() ?? 0,
       passed: json['passed'] == true,
       completedAt: json['completedAt'] as String?,
+      strengths: (json['strengths'] as List?)?.whereType<String>().toList() ?? const [],
+      weaknesses: (json['weaknesses'] as List?)?.whereType<String>().toList() ?? const [],
     );
   }
 
@@ -38,6 +44,8 @@ class EnglishLessonResult {
       'xp': xp,
       'passed': passed,
       'completedAt': completedAt,
+      'strengths': strengths,
+      'weaknesses': weaknesses,
     };
   }
 }
@@ -123,6 +131,8 @@ class EnglishProgressService {
     required bool passed,
     required int attempts,
     required int xp,
+    List<String> strengths = const [],
+    List<String> weaknesses = const [],
   }) async {
     final current = await load();
     final results = Map<int, EnglishLessonResult>.from(current.results);
@@ -151,6 +161,8 @@ class EnglishProgressService {
       completedAt: everPassed
           ? previous?.completedAt ?? DateTime.now().toIso8601String()
           : null,
+      strengths: strengths.isNotEmpty ? strengths : previous?.strengths ?? const [],
+      weaknesses: weaknesses.isNotEmpty ? weaknesses : previous?.weaknesses ?? const [],
     );
 
     final snapshot = _buildSnapshot(results);

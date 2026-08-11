@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class Brand {
   Brand._();
@@ -6,25 +6,25 @@ class Brand {
   // ============================================================
   // PALETA OFICIAL
   // Usamos únicamente la identidad visual definida:
-  // #13023D, #23023D, #6000C7, #05058C, #00BAFF, #00FFC4, #00CC9C
+  // Sistema visual unificado con Login y Home: marfil, navy y dorado.
   // ============================================================
 
-  static const Color bgDeep = Color(0xFF13023D);
-  static const Color bgPanel = Color(0xFF23023D);
-  static const Color purple = Color(0xFF6000C7);
-  static const Color navy = Color(0xFF05058C);
-  static const Color cyan = Color(0xFF00BAFF);
-  static const Color mint = Color(0xFF00FFC4);
-  static const Color mintDark = Color(0xFF00CC9C);
+  static const Color bgDeep = Color(0xFF081D30);
+  static const Color bgPanel = Color(0xFF102A43);
+  static const Color purple = Color(0xFFD9A441);
+  static const Color navy = Color(0xFF102A43);
+  static const Color cyan = Color(0xFFEBC66E);
+  static const Color mint = Color(0xFFEBC66E);
+  static const Color mintDark = Color(0xFFA97320);
 
   // Neutros funcionales para lectura.
   static const Color white = Color(0xFFFFFFFF);
-  static const Color muted = Color(0xFFBDAFE2);
+  static const Color muted = Color(0xFFD8C9B5);
 
   // Líneas y superficies derivadas del sistema visual.
-  static const Color line = Color(0xFF3B2369);
-  static const Color field = Color(0xFF1B0749);
-  static const Color card = Color(0xFF24044A);
+  static const Color line = Color(0xFF29425C);
+  static const Color field = Color(0xFF0D2438);
+  static const Color card = Color(0xFF122F49);
 
   // Alias temporal para evitar errores si algún archivo viejo lo usa.
   // No usar como color principal en pantallas nuevas.

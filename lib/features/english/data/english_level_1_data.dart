@@ -10,14 +10,14 @@ const englishLevel1Data = <EnglishLesson>[
     sourcePages: [6, 7, 8, 9],
     summary: 'In this lesson, students will learn essential greetings and how to introduce themselves in English. They will practice phrases such as Hello!, Nice to meet you!, and My name is…. The lesson will also introduce polite expressions for different times of the day, such as Good morning! and Good night...',
     learningGoals: [
-    'Reconocer saludos básicos.',
+    'Saludar y despedirse según el momento del día.',
     'Presentarse con nombre, edad y origen.',
-    'Usar expresiones corteses en conversaciones simples.',
+    'Responder de forma natural en un primer encuentro.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 1.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 1.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 1.',
+    'Aplica el tema de la lección 1 en una situación corta antes del juego.',
   ],
     rawContent: r'''
             1.Welcome
@@ -148,14 +148,14 @@ Jack: Nice to meet you too!
     sourcePages: [11, 12, 13, 14],
     summary: 'This lesson focuses on expressing emotions and well-being in different ways. Students will practice asking How are you? and responding with various answers, including I’m fine, thanks, I’m tired, or I’m excited. They will learn vocabulary for different feelings, such as happy, sad, nervous, worri...',
     learningGoals: [
-    'Preguntar cómo está una persona.',
-    'Expresar estados de ánimo y emociones.',
-    'Responder de forma natural en conversaciones cotidianas.',
+    'Preguntar y responder cómo se siente una persona.',
+    'Reconocer y expresar emociones frecuentes.',
+    'Usar emociones en frases y conversaciones breves.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 2.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 2.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 2.',
+    'Aplica el tema de la lección 2 en una situación corta antes del juego.',
   ],
     rawContent: r'''
         2.how are you?
@@ -288,14 +288,14 @@ nervous…
     sourcePages: [16, 17, 18, 19],
     summary: 'Students will learn about singular personal pronouns: I, you, he, she, it. They will understand how pronouns replace nouns and make sentences clearer and more natural. The lesson will include practical examples like She is a doctor instead of Anna is a doctor. Through guided exercises, students will',
     learningGoals: [
-    'Usar pronombres personales singulares.',
-    'Diferenciar I, you, he, she e it.',
-    'Formar frases afirmativas, negativas y preguntas simples.',
+    'Distinguir I, you, he, she e it.',
+    'Reemplazar nombres por pronombres singulares.',
+    'Construir frases y preguntas con pronombres singulares.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 3.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 3.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 3.',
+    'Aplica el tema de la lección 3 en una situación corta antes del juego.',
   ],
     rawContent: r'''
           3. Personal
@@ -401,14 +401,14 @@ Pronombres Personales Singular - Singular Personal Pronouns
     sourcePages: [21, 22, 23, 24],
     summary: 'Building on the previous lesson, students will now focus on plural pronouns: we, you, they. They will practice forming sentences such as We are students and They play football on weekends. The lesson will also introduce how you can be singular or plural depending on the context. Students will eng...',
     learningGoals: [
-    'Usar pronombres personales plurales.',
-    'Diferenciar we, you y they.',
-    'Hablar de grupos y actividades compartidas.',
+    'Distinguir we, you y they.',
+    'Hablar de grupos usando pronombres plurales.',
+    'Construir preguntas y negaciones con sujetos plurales.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 4.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 4.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 4.',
+    'Aplica el tema de la lección 4 en una situación corta antes del juego.',
   ],
     rawContent: r'''
   4.Personal
@@ -523,14 +523,14 @@ Pronombres Personales Plural - Plural Personal Pronouns
     sourcePages: [26, 27, 28, 29, 30],
     summary: 'This lesson focuses on one of the most fundamental verbs in English: to be. Students will learn its conjugation in the present tense (am, is, are) and practice forming affirmative, negative, and interrogative sentences. They will learn to use to be when describing personal traits, nationalities,...',
     learningGoals: [
-    'Conjugar el verbo to be en presente.',
-    'Formar oraciones afirmativas, negativas e interrogativas.',
-    'Describir rasgos, nacionalidades, profesiones y emociones.',
+    'Conjugar to be con am, is y are.',
+    'Formar afirmaciones, negativas y preguntas.',
+    'Usar to be para describir personas y estados.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 5.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 5.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 5.',
+    'Aplica el tema de la lección 5 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 5.The Verb To Be
@@ -646,14 +646,14 @@ sports club...                            Sophie: Tal vez deberías unirte a un
     sourcePages: [32, 33, 34, 35, 36],
     summary: 'Students will explore different uses of the verb to be, focusing on identity, location, and emotions. They will analyze real-world examples where to be is used, such as This is my house and They are at school. Through structured practice, students will learn to differentiate between is and are in',
     learningGoals: [
-    'Usar to be para identidad, ubicación y emociones.',
-    'Practicar contracciones comunes.',
-    'Hacer y responder preguntas básicas.',
+    'Usar to be para identidad, descripción y ubicación.',
+    'Reconocer afirmaciones y preguntas con is/are.',
+    'Describir personas y relaciones en contexto.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 6.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 6.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 6.',
+    'Aplica el tema de la lección 6 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 6.To be or not to
@@ -771,14 +771,14 @@ teacher.
     sourcePages: [38, 39, 40, 41, 42],
     summary: 'In this lesson, students will learn how to count from 1 to 10 and use these numbers in daily situations. They will practice pronunciation and spelling through interactive games and exercises. The lesson will include real-life applications, such as asking about prices,',
     learningGoals: [
-    'Contar del 1 al 10.',
-    'Usar números en edades, precios y objetos.',
-    'Reconocer números en conversaciones simples.',
+    'Reconocer y producir los números de 0 a 10.',
+    'Usar números para contar objetos y expresar cantidades.',
+    'Reconocer ordinales del primero al décimo.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 7.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 7.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 7.',
+    'Aplica el tema de la lección 7 en una situación corta antes del juego.',
   ],
     rawContent: r'''
     7. Numbers I
@@ -942,14 +942,14 @@ Números I - Numbers I
     sourcePages: [44, 45, 46, 47, 48],
     summary: 'Expanding on their knowledge of numbers, students will now learn 11-20. They will practice pronunciation and spelling while applying these numbers in real-life situations such as giving phone numbers or stating classroom numbers. The lesson includes fun interactive activities like',
     learningGoals: [
-    'Usar números del 11 al 20 y decenas.',
-    'Dar números de habitación, teléfono o cantidades.',
-    'Practicar escritura y pronunciación de números.',
+    'Reconocer y producir los números del 11 al 20.',
+    'Comprender decenas y números mayores presentes en el material.',
+    'Usar números en habitaciones, cantidades y situaciones reales.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 8.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 8.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 8.',
+    'Aplica el tema de la lección 8 en una situación corta antes del juego.',
   ],
     rawContent: r'''
      8. Numbers II
@@ -1110,14 +1110,14 @@ Marc: Thank you!                                   habitación de Pedro Smith?
     sourcePages: [50, 51, 52, 53, 54],
     summary: 'Students will learn to identify and describe colors in English. The lesson will cover basic colors (red, blue, yellow), as well as shades and tones (light blue, dark green). They will engage in activities where they describe objects using color adjectives. Pair work exercises will involve asking...',
     learningGoals: [
-    'Identificar colores básicos y tonos.',
+    'Reconocer colores y tonalidades.',
     'Describir objetos usando colores.',
-    'Preguntar y responder sobre colores.',
+    'Expresar preferencias de color.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 9.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 9.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 9.',
+    'Aplica el tema de la lección 9 en una situación corta antes del juego.',
   ],
     rawContent: r'''
            9.Colours
@@ -1248,14 +1248,14 @@ Ana: Me too!                             María: ¡Me gusta!
     sourcePages: [56, 57, 58, 59, 60],
     summary: 'This lesson introduces vocabulary related to family members, such as mother, father, brother, sister, uncle, aunt. Students will learn to describe relationships using phrases like She is my sister and He is my cousin. Role- playing activities will encourage them to talk about their own families.',
     learningGoals: [
-    'Comprender el tema central: My Family.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Identificar miembros de la familia y relaciones.',
+    'Presentar y describir familiares.',
+    'Hablar de estado civil y parentescos.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 10.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 10.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 10.',
+    'Aplica el tema de la lección 10 en una situación corta antes del juego.',
   ],
     rawContent: r'''
           10. My family
@@ -1400,14 +1400,14 @@ John: Very well, thank you.                 familia?
     sourcePages: [62, 63, 64, 65],
     summary: 'This lesson covers the difference between a and an, teaching students when to use them before singular nouns. They will learn that a is used before consonant sounds (a book), while an is used before vowel sounds (an apple). Sentence-building activities will reinforce the concept. By the',
     learningGoals: [
-    'Comprender el tema central: Indefinite Articles.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Distinguir a y an según el sonido inicial.',
+    'Identificar objetos con artículos indefinidos.',
+    'Construir afirmaciones y preguntas con a/an.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 11.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 11.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 11.',
+    'Aplica el tema de la lección 11 en una situación corta antes del juego.',
   ],
     rawContent: r'''
       11. Indefinite
@@ -1492,14 +1492,14 @@ Son: Oh, thank you, Mum!                      Hijo: ¡Oh, gracias, mamá!
     sourcePages: [67, 68, 69, 70, 71],
     summary: 'Students will learn how to use to have to express possession, relationships, and characteristics. They will practice forming sentences like I have a car and She has two brothers. The lesson will include affirmative, negative, and interrogative forms. By the end, students will',
     learningGoals: [
-    'Comprender el tema central: The Verb To Have.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Usar have y has para posesión y relaciones.',
+    'Formar preguntas con do/does + have.',
+    'Construir negaciones con don’t/doesn’t have.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 12.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 12.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 12.',
+    'Aplica el tema de la lección 12 en una situación corta antes del juego.',
   ],
     rawContent: r'''
        12. To have
@@ -1615,14 +1615,14 @@ have one sister.
     sourcePages: [73, 74, 75, 76, 77],
     summary: 'Students will learn vocabulary for describing physical appearance, such as tall, short, blond, dark-haired. They will practice using to be and to have to form sentences like She is tall and He has brown eyes. Interactive activities will involve describing classmates and celebrities.',
     learningGoals: [
-    'Comprender el tema central: How Do You Look?.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Describir altura, contextura, cabello y rasgos físicos.',
+    'Combinar to be y to have en descripciones.',
+    'Preguntar y responder cómo luce una persona.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 13.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 13.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 13.',
+    'Aplica el tema de la lección 13 en una situación corta antes del juego.',
   ],
     rawContent: r'''
   13.How do you
@@ -1768,14 +1768,14 @@ eyes, and a moustache.                 ojos verdes y un bigote.
     sourcePages: [79, 80, 81, 82, 83],
     summary: 'This lesson introduces vocabulary for body parts, including head, arms, legs, hands, feet. Students will practice saying phrases like My arm hurts and She has blue eyes. Activities will include labeling diagrams and playing games to reinforce learning. By the end, students will be able to',
     learningGoals: [
-    'Comprender el tema central: Body Parts.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Identificar las principales partes del cuerpo.',
+    'Describir características corporales.',
+    'Expresar molestias sencillas usando partes del cuerpo.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 14.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 14.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 14.',
+    'Aplica el tema de la lección 14 en una situación corta antes del juego.',
   ],
     rawContent: r'''
  14. Body parts
@@ -1906,14 +1906,14 @@ Leo: Me too, good night!                Emma: Sí, me voy a la cama.
     sourcePages: [85, 86, 87, 88, 89],
     summary: 'Students will learn how to ask for and tell the time using phrases like What time is it? and It’s half past three. They will practice recognizing and using different time expressions such as quarter past, quarter to, and o’clock. The lesson will include exercises where students schedule activitie...',
     learningGoals: [
-    'Comprender el tema central: What Time Is It?.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Preguntar y decir la hora.',
+    'Usar past, to, half past y o’clock.',
+    'Relacionar horarios con momentos del día.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 15.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 15.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 15.',
+    'Aplica el tema de la lección 15 en una situación corta antes del juego.',
   ],
     rawContent: r'''
  15. What time
@@ -2065,14 +2065,14 @@ Jake: I promise I’ll leave at ten.      class.
     sourcePages: [91, 92, 93, 94, 95],
     summary: 'This lesson focuses on sports-related vocabulary and how to discuss hobbies and physical activities. Students will learn phrases such as I play football, She does gymnastics, and They go swimming on weekends. The lesson will cover verbs associated with sports like play, do, go, and when',
     learningGoals: [
-    'Comprender el tema central: Do You Practice Any Sport?.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Reconocer deportes y actividades físicas.',
+    'Distinguir play, do y go según la actividad.',
+    'Hablar de deportes y rutinas de ejercicio.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 16.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 16.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 16.',
+    'Aplica el tema de la lección 16 en una situación corta antes del juego.',
   ],
     rawContent: r'''
       16.Do you
@@ -2229,14 +2229,14 @@ Emma: Yes, let's go this weekend!
     sourcePages: [97, 98, 99, 100],
     summary: 'Students will learn how to compare things using comparative adjectives (bigger, smaller, faster) and superlative adjectives (the biggest, the smallest, the fastest). They will study spelling rules for forming comparatives and superlatives, such as adding -er and -est',
     learningGoals: [
-    'Comprender el tema central: Comparative and Superlative Adjectives.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Formar comparativos con -er y more.',
+    'Formar superlativos con -est y most.',
+    'Usar formas irregulares como better/best y worse/worst.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 17.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 17.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 17.',
+    'Aplica el tema de la lección 17 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 17.Comparative
@@ -2355,14 +2355,14 @@ Leo: Let's have coffee here.
     sourcePages: [102, 103, 104, 105],
     summary: 'This lesson will teach students the difference between countable nouns (apples, books, chairs) and uncountable nouns (water, sugar, rice). They will learn how to use quantifiers like some, any, much, many, and a lot of appropriately. Exercises will include classifying nouns into countable or',
     learningGoals: [
-    'Comprender el tema central: Countable and Uncountable.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Distinguir sustantivos contables e incontables.',
+    'Elegir how many y how much correctamente.',
+    'Hablar de cantidades y precios en situaciones reales.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 18.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 18.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 18.',
+    'Aplica el tema de la lección 18 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 18. Countable and
@@ -2459,14 +2459,14 @@ Mark: $10. Let's pay.                  Marcos: $10. Vamos a pagar.
     sourcePages: [107, 108, 109, 110, 111],
     summary: 'Students will focus on polite expressions and good wishes, such as I wish you good luck, Have a great day!, and Happy birthday!. They will learn how to use these phrases in social situations, such as congratulating someone, expressing sympathy, or wishing someone',
     learningGoals: [
-    'Comprender el tema central: I Wish You.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Usar felicitaciones, buenos deseos y expresiones sociales.',
+    'Elegir una expresión según la situación.',
+    'Responder de forma natural a noticias y celebraciones.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 19.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 19.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 19.',
+    'Aplica el tema de la lección 19 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 19. I Wish You
@@ -2575,14 +2575,14 @@ Jake: Let's celebrate!                    Emily: ¡Gracias, estoy muy feliz!
     sourcePages: [113, 114, 115, 116, 117],
     summary: 'This lesson introduces vocabulary for pets and domestic animals, including dog, cat, bird, fish, hamster. Students will describe their pets or imaginary ones using adjectives like fluffy, small, playful, friendly. They will learn how to talk about pet care with phrases such',
     learningGoals: [
-    'Comprender el tema central: Pets.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Identificar mascotas, accesorios y cuidados básicos.',
+    'Describir acciones y características de mascotas.',
+    'Hablar de responsabilidades relacionadas con animales.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 20.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 20.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 20.',
+    'Aplica el tema de la lección 20 en una situación corta antes del juego.',
   ],
     rawContent: r'''
                 20.Pets
@@ -2724,14 +2724,14 @@ Mother: I’ll buy you a toy dog.           Mamá: Te compraré un perro de
     sourcePages: [119, 120, 121, 122, 123],
     summary: 'Students will master the simple present tense for daily routines and habits. They will practice forming affirmative (I eat breakfast at 7 AM), negative (She doesn’t like coffee), and interrogative (Do you go to school on Sundays?) sentences. The lesson will emphasize third-person',
     learningGoals: [
-    'Comprender el tema central: Simple Present.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Usar presente simple para hábitos y rutinas.',
+    'Aplicar tercera persona singular correctamente.',
+    'Formar afirmaciones, preguntas y negaciones con do/does.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 21.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 21.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 21.',
+    'Aplica el tema de la lección 21 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 21. Simple Present
@@ -2871,14 +2871,14 @@ Bank clerk: Goodbye!
     sourcePages: [125, 126, 127, 128, 129],
     summary: 'This lesson expands students’ geographical knowledge with vocabulary for European countries and nationalities (France – French, Germany – German). They will practice forming sentences like I am from Spain and She is Italian. Listening exercises will help them recognize different country names and...',
     learningGoals: [
-    'Comprender el tema central: Europe.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Reconocer países y nacionalidades europeas.',
+    'Relacionar país, idioma y nacionalidad.',
+    'Preguntar y responder de dónde es una persona.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 22.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 22.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 22.',
+    'Aplica el tema de la lección 22 en una situación corta antes del juego.',
   ],
     rawContent: r'''
      22. Europe
@@ -3045,14 +3045,14 @@ language to learn.                       María: ¡Sí! Es un idioma divertido y
     sourcePages: [131, 132, 133, 134],
     summary: 'Students will learn vocabulary related to breakfast foods and mealtime conversations. They will practice phrases such as I have toast and coffee for breakfast and Do you like cereal?. The lesson will also introduce expressions used in restaurants like Can I have a',
     learningGoals: [
-    'Comprender el tema central: Having Breakfast.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Identificar alimentos y bebidas del desayuno.',
+    'Pedir alimentos y bebidas de forma cortés.',
+    'Hablar de preferencias y hábitos del desayuno.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 23.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 23.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 23.',
+    'Aplica el tema de la lección 23 en una situación corta antes del juego.',
   ],
     rawContent: r'''
               23.
@@ -3193,14 +3193,14 @@ can go for a walk.                       es domingo, así que los comeré.
     sourcePages: [136, 137, 138, 139, 140],
     summary: 'This lesson introduces fruit vocabulary (apple, banana, orange, strawberry), along with adjectives to describe taste (sweet, sour, juicy). Students will learn how to express likes and dislikes using phrases like I love grapes but I don’t like lemons. Pair activities will involve describing fruits...',
     learningGoals: [
-    'Comprender el tema central: Fruits.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Identificar las frutas del material oficial.',
+    'Describir sabor, textura, color y estado de una fruta.',
+    'Comprar frutas y expresar gustos y preferencias.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 24.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 24.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 24.',
+    'Aplica el tema de la lección 24 en una situación corta antes del juego.',
   ],
     rawContent: r'''
                  24.Fruits
@@ -3350,14 +3350,14 @@ Seller: Here you go. That’s $8 total.    favor.
     sourcePages: [142, 143, 144, 145, 146],
     summary: 'Students will expand their vocabulary with vegetable names (carrot, potato, spinach) and learn how to describe their flavors and textures. They will practice asking and answering questions about food preferences, such as Do you like broccoli? and What vegetables do you eat every day?. Listening e...',
     learningGoals: [
-    'Comprender el tema central: Vegetables.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Identificar verduras y hortalizas del material oficial.',
+    'Describir textura y frescura.',
+    'Hablar de preferencias y recomendaciones de alimentos.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 25.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 25.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 25.',
+    'Aplica el tema de la lección 25 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 25. Vegetables
@@ -3499,14 +3499,14 @@ bad.                                    tan mal.
     sourcePages: [148, 149, 150, 151, 152],
     summary: 'Students will practice phrases used in shopping situations, including How much is this?, I would like to buy a dress, and Can I pay with a credit card?. Role-playing activities will simulate real shopping experiences. By the end, students will be able to confidently shop for clothes, groceries,',
     learningGoals: [
-    'Comprender el tema central: Shopping.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Reconocer prendas, accesorios y tallas.',
+    'Preguntar por talla, precio y probador.',
+    'Expresar si una prenda queda bien, es cómoda o cara.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 26.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 26.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 26.',
+    'Aplica el tema de la lección 26 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 26. Shopping
@@ -3646,14 +3646,14 @@ Customer: I’ll take it, thank you!
     sourcePages: [154, 155, 156, 157, 158],
     summary: 'This lesson introduces the present continuous tense (I am reading a book). Students will practice describing ongoing actions and forming questions like What are you doing?. Speaking exercises will involve describing pictures and daily activities. By the end, students will be',
     learningGoals: [
-    'Comprender el tema central: What Do You Do?.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Hablar de hobbies, intereses y tiempo libre.',
+    'Preguntar qué hace una persona en su tiempo libre.',
+    'Describir planes y actividades de ocio.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 27.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 27.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 27.',
+    'Aplica el tema de la lección 27 en una situación corta antes del juego.',
   ],
     rawContent: r'''
     27.What Do
@@ -3788,14 +3788,14 @@ soon.
     sourcePages: [160, 161, 162, 163, 164],
     summary: 'Students will explore vocabulary related to American countries, their cultures, and nationalities. They will practice forming sentences like I am from Argentina and He is Brazilian. Listening exercises will help them recognize accents. By the end, they will be able to discuss different countries and',
     learningGoals: [
-    'Comprender el tema central: America.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Reconocer países y nacionalidades de América.',
+    'Relacionar país con nacionalidad.',
+    'Hablar del origen de personas de distintos países americanos.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 28.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 28.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 28.',
+    'Aplica el tema de la lección 28 en una situación corta antes del juego.',
   ],
     rawContent: r'''
             28.America
@@ -3946,14 +3946,14 @@ Thomas: You’re welcome!
     sourcePages: [166, 167, 168, 169],
     summary: 'Students will learn how to ask for and give directions using prepositions of place (next to, behind, in front of). They will practice role-playing conversations like Excuse me, where is the bank?. By the end, students will be able to ask for and provide location-based information',
     learningGoals: [
-    'Comprender el tema central: Where Am I?.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Identificar lugares y referencias de una ciudad.',
+    'Dar y seguir indicaciones básicas.',
+    'Usar izquierda, derecha, cerca, lejos y otros referentes.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 29.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 29.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 29.',
+    'Aplica el tema de la lección 29 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 29.Where Am I?
@@ -4078,14 +4078,14 @@ Marc: Thank you!                          derecho.
     sourcePages: [171, 172, 173, 174, 175],
     summary: 'Students will learn vocabulary related to furniture and household items found in the living room and bedroom. They will practice using there is and there are to describe rooms, such as There is a sofa in the living room and There are two lamps in my bedroom. The lesson will include exercises',
     learningGoals: [
-    'Comprender el tema central: The Bedroom and The Living Room.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Identificar muebles y objetos de sala y dormitorio.',
+    'Usar there is y there are para describir espacios.',
+    'Describir habitaciones con adjetivos sencillos.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 30.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 30.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 30.',
+    'Aplica el tema de la lección 30 en una situación corta antes del juego.',
   ],
     rawContent: r'''
  30.The Bedroom
@@ -4227,14 +4227,14 @@ Maria: It’s never cold here!               bonito.
     sourcePages: [177, 178, 179, 180, 181],
     summary: 'This lesson focuses on the present continuous tense to describe ongoing actions. Students will practice forming sentences like I am reading a book and She is cooking dinner. They will also learn how to ask and answer questions such as What are you doing? and Are they studying?. Activities',
     learningGoals: [
-    'Comprender el tema central: Present Continuous.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Usar presente continuo para acciones en progreso.',
+    'Formar am/is/are + verbo-ing.',
+    'Construir afirmaciones, preguntas y negaciones en presente continuo.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 31.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 31.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 31.',
+    'Aplica el tema de la lección 31 en una situación corta antes del juego.',
   ],
     rawContent: r'''
             31. Present
@@ -4370,14 +4370,14 @@ Peter: So, you are not studying!           Claudia: Estamos viendo la tele.
     sourcePages: [183, 184, 185, 186],
     summary: 'Students will learn prepositions like on, in, under, behind, next to, and practice using them to describe locations. They will complete exercises such as The book is on the table and The cat is under the chair. The lesson will include map-reading activities where students follow and give',
     learningGoals: [
-    'Comprender el tema central: Prepositions of Place.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Usar preposiciones para ubicar objetos y lugares.',
+    'Interpretar posiciones en una escena o mapa.',
+    'Preguntar y responder dónde está algo.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 32.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 32.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 32.',
+    'Aplica el tema de la lección 32 en una situación corta antes del juego.',
   ],
     rawContent: r'''
 32. Prepositions
@@ -4482,14 +4482,14 @@ Preposiciones de lugar - Prepositions of Place
     sourcePages: [188, 189, 190, 191, 192],
     summary: 'This lesson introduces vocabulary for professions and workplaces, such as doctor, teacher, engineer, chef. Students will learn how to describe jobs using the verb to be, e.g., He is a firefighter and She is a nurse. They will practice asking and answering questions about occupations, such as What',
     learningGoals: [
-    'Comprender el tema central: What Is Your Job?.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Identificar profesiones y ocupaciones.',
+    'Relacionar profesión con función o lugar de trabajo.',
+    'Preguntar y responder a qué se dedica una persona.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 33.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 33.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 33.',
+    'Aplica el tema de la lección 33 en una situación corta antes del juego.',
   ],
     rawContent: r'''
               33. What Is
@@ -4638,14 +4638,14 @@ Anna: I also want the holidays!          encanta.
     sourcePages: [194, 195, 196, 197],
     summary: 'Students will learn possessive adjectives (my, your, his, her, its, our, their) and how to use them correctly in sentences. They will practice forming phrases like This is my book and That is their house. The lesson will include activities where they complete sentences with the',
     learningGoals: [
-    'Comprender el tema central: Possessive Adjectives.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Usar my, your, his, her, its, our y their.',
+    'Relacionar poseedor y objeto correctamente.',
+    'Preguntar y describir pertenencias y relaciones.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 34.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 34.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 34.',
+    'Aplica el tema de la lección 34 en una situación corta antes del juego.',
   ],
     rawContent: r'''
    34. Possessive
@@ -4763,14 +4763,14 @@ from Spain too!
     sourcePages: [199, 200, 201, 202, 203],
     summary: 'This lesson covers vocabulary for describing size and dimensions, including big, small, tall, short, long, wide, heavy, light. Students will learn how to compare objects using bigger than and smaller than, e.g., This box is bigger than that one. They will practice using size adjectives',
     learningGoals: [
-    'Comprender el tema central: Size.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Describir tamaño, longitud, anchura, peso y profundidad.',
+    'Comparar dimensiones de objetos y personas.',
+    'Usar vocabulario de medidas en situaciones sencillas.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 35.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 35.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 35.',
+    'Aplica el tema de la lección 35 en una situación corta antes del juego.',
   ],
     rawContent: r'''
                   35.Size
@@ -4920,14 +4920,14 @@ player.                                    por ninguna jugadora de voleibol.
     sourcePages: [205, 206, 207, 208, 209, 210],
     summary: 'Students will learn how to ask and answer questions about days, months, and dates, such as What day is it today? and Today is Monday. They will practice using ordinal numbers (first, second, third) to talk about dates, e.g., My birthday is on the tenth of July. The lesson will include exercises',
     learningGoals: [
-    'Comprender el tema central: What Day Is Today?.',
-    'Practicar vocabulario, frases y estructuras del libro.',
-    'Aplicar lo aprendido en conversaciones guiadas.',
+    'Nombrar los siete días y los doce meses.',
+    'Preguntar y responder qué día o mes es.',
+    'Hablar de fechas, semanas, meses y momentos del año.',
   ],
     practicePrompts: [
-    'Lee en voz alta el vocabulario principal de la lección 36.',
-    'Crea 3 frases propias usando el vocabulario aprendido.',
-    'Practica un diálogo corto con Vancouver AI usando el tema de la lección.',
+    'Escucha y usa en voz alta expresiones clave de la lección 36.',
+    'Resuelve una microactividad visual o de construcción sobre la lección 36.',
+    'Aplica el tema de la lección 36 en una situación corta antes del juego.',
   ],
     rawContent: r'''
      36. What Day

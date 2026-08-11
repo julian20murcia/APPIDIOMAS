@@ -79,6 +79,34 @@ class EnglishSessionResult {
     required this.outcomes,
   });
 
+  Map<String, int> get accuracyBySkill {
+    final totals = <String, int>{};
+    final correct = <String, int>{};
+
+    for (final outcome in outcomes) {
+      final key = outcome.skill.name;
+      totals[key] = (totals[key] ?? 0) + 1;
+      if (outcome.correct) {
+        correct[key] = (correct[key] ?? 0) + 1;
+      }
+    }
+
+    return {
+      for (final entry in totals.entries)
+        entry.key: (((correct[entry.key] ?? 0) / entry.value) * 100).round(),
+    };
+  }
+
+  List<String> get strengths => accuracyBySkill.entries
+      .where((entry) => entry.value >= 80)
+      .map((entry) => entry.key)
+      .toList();
+
+  List<String> get weaknesses => accuracyBySkill.entries
+      .where((entry) => entry.value < 80)
+      .map((entry) => entry.key)
+      .toList();
+
   Map<String, dynamic> toNavigationResult() {
     return {
       'sessionId': sessionId,
@@ -91,6 +119,9 @@ class EnglishSessionResult {
       'maxCombo': maxCombo,
       'averageResponseMilliseconds': averageResponseMilliseconds,
       'passed': passed,
+      'strengths': strengths,
+      'weaknesses': weaknesses,
+      'accuracyBySkill': accuracyBySkill,
       'outcomes': outcomes.map((item) => item.toJson()).toList(),
     };
   }

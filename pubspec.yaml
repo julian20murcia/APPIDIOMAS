@@ -1,6 +1,7 @@
 name: appidiomas
 publish_to: 'none'
-description: LingoVerse - MVP visual para aprendizaje de idiomas.
+
+description: LingoVerse - Plataforma interactiva para aprendizaje de idiomas.
 version: 1.0.0+1
 
 environment:
@@ -9,9 +10,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   cupertino_icons: ^1.0.8
+
+  # Persistencia local
   shared_preferences: ^2.5.5
+
+  # Voz y pronunciación
   flutter_tts: ^4.2.5
+  speech_to_text: ^7.4.0
+
+  # Firebase
   firebase_core: ^4.12.1
   firebase_auth: ^6.5.6
   cloud_firestore: ^6.7.1
@@ -21,13 +30,22 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
+
   assets:
+    # Identidad visual de LingoVerse
+    - assets/art/brand/
+    - assets/art/mascot/
+
+    # Mundos e idiomas
     - assets/art/worlds/
+    - assets/art/landmarks/
+    - assets/art/bubbles/
+
+    # Interfaz
     - assets/art/ui/
     - assets/art/decor/
-    - assets/art/bubbles/
-    - assets/art/landmarks/

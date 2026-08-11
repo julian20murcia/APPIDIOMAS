@@ -1,17 +1,9 @@
 import 'dart:math' as math;
 
+import '../data/english_level_1_curriculum.dart';
 import '../models/english_activity.dart';
 import '../models/english_lesson.dart';
-
-class EnglishVocabularyPair {
-  final String english;
-  final String spanish;
-
-  const EnglishVocabularyPair({
-    required this.english,
-    required this.spanish,
-  });
-}
+import '../models/english_vocabulary_pair.dart';
 
 class EnglishQuestionFactory {
   final math.Random random;
@@ -48,65 +40,12 @@ class EnglishQuestionFactory {
   }
 
   List<EnglishVocabularyPair> extractPairs(EnglishLesson lesson) {
-    final pairs = <EnglishVocabularyPair>[];
-    final seen = <String>{};
-
-    void addPair(String english, String spanish) {
-      final cleanEnglish = _cleanCell(english);
-      final cleanSpanish = _cleanCell(spanish);
-
-      if (!_validPair(cleanEnglish, cleanSpanish)) return;
-
-      final key = '${cleanEnglish.toLowerCase()}|${cleanSpanish.toLowerCase()}';
-      if (!seen.add(key)) return;
-
-      pairs.add(
-        EnglishVocabularyPair(
-          english: cleanEnglish,
-          spanish: cleanSpanish,
-        ),
-      );
-    }
-
-    for (final rawLine in lesson.rawContent.split('\n')) {
-      final line = rawLine.replaceAll('\t', '    ').trim();
-      if (line.isEmpty) continue;
-
-      final columns = line
-          .split(RegExp(r'\s{2,}'))
-          .map((item) => item.trim())
-          .where((item) => item.isNotEmpty)
-          .toList();
-
-      if (columns.length >= 2) {
-        addPair(columns.first, columns.last);
-        continue;
-      }
-
-      final dash = line.split(RegExp(r'\s[-–—]\s'));
-      if (dash.length == 2) {
-        final first = dash.first.trim();
-        final second = dash.last.trim();
-
-        if (_looksSpanish(first) && !_looksSpanish(second)) {
-          addPair(second, first);
-        } else {
-          addPair(first, second);
-        }
-      }
-    }
-
-    final fallback = _fallbackPairs[lesson.number] ?? const [];
-    for (final pair in fallback) {
-      addPair(pair.english, pair.spanish);
-    }
-
-    if (pairs.length > 42) {
-      pairs.shuffle(random);
-      return pairs.take(42).toList();
-    }
-
-    return pairs;
+    // IMPORTANT: nunca inferimos preguntas desde rawContent. El PDF/texto crudo
+    // contiene títulos, diálogos partidos y columnas que no son vocabulario.
+    // Cada lección solo puede evaluar su banco pedagógico curado.
+    return List<EnglishVocabularyPair>.unmodifiable(
+      englishLevel1Vocabulary[lesson.number] ?? const [],
+    );
   }
 
   List<EnglishActivity> _activitiesForPair({
@@ -127,6 +66,7 @@ class EnglishQuestionFactory {
     activities.add(
       EnglishActivity(
         id: 'l${lesson.number}-en-es-$key',
+        conceptKey: pair.english,
         type: EnglishActivityType.multipleChoice,
         skill: EnglishSkill.vocabulary,
         difficulty: difficulty,
@@ -143,6 +83,7 @@ class EnglishQuestionFactory {
     activities.add(
       EnglishActivity(
         id: 'l${lesson.number}-es-en-$key',
+        conceptKey: pair.english,
         type: EnglishActivityType.multipleChoice,
         skill: EnglishSkill.vocabulary,
         difficulty: difficulty,
@@ -161,6 +102,7 @@ class EnglishQuestionFactory {
     activities.add(
       EnglishActivity(
         id: 'l${lesson.number}-listen-$key',
+        conceptKey: pair.english,
         type: EnglishActivityType.listenChoice,
         skill: EnglishSkill.listening,
         difficulty: difficulty,
@@ -175,6 +117,26 @@ class EnglishQuestionFactory {
       ),
     );
 
+    if (wordCount <= 8 && pair.english.length <= 72) {
+      activities.add(
+        EnglishActivity(
+          id: 'l${lesson.number}-speak-$key',
+          conceptKey: pair.english,
+        type: EnglishActivityType.speakAnswer,
+          skill: EnglishSkill.speaking,
+          difficulty: difficulty,
+          prompt: 'Di esta frase en voz alta.',
+          instruction: 'Escucha primero y luego repítela. Buscamos claridad, no un acento perfecto.',
+          answer: pair.english,
+          explanation: 'La frase objetivo era “${pair.english}”.',
+          hint: 'Escúchala por bloques y repite sin correr.',
+          speechText: pair.english,
+          seconds: 45,
+          basePoints: 14,
+        ),
+      );
+    }
+
     final showCorrectTranslation = random.nextBool();
     final shownTranslation = showCorrectTranslation
         ? pair.spanish
@@ -185,6 +147,7 @@ class EnglishQuestionFactory {
       EnglishActivity(
         id:
             'l${lesson.number}-tf-$key-${_stableHash(shownTranslation)}',
+        conceptKey: pair.english,
         type: EnglishActivityType.trueFalse,
         skill: EnglishSkill.reading,
         difficulty: difficulty,
@@ -200,11 +163,12 @@ class EnglishQuestionFactory {
 
     final words = _words(pair.english);
 
-    if (words.length >= 2 && words.length <= 9) {
+    if (_supportsStructurePractice(pair.english, words)) {
       activities.add(
         EnglishActivity(
           id: 'l${lesson.number}-order-$key',
-          type: EnglishActivityType.orderWords,
+          conceptKey: pair.english,
+        type: EnglishActivityType.orderWords,
           skill: EnglishSkill.grammar,
           difficulty: words.length <= 4
               ? EnglishDifficulty.medium
@@ -229,6 +193,7 @@ class EnglishQuestionFactory {
       activities.add(
         EnglishActivity(
           id: 'l${lesson.number}-blank-$key-$blankIndex',
+          conceptKey: pair.english,
           type: EnglishActivityType.fillBlank,
           skill: EnglishSkill.grammar,
           difficulty: difficulty,
@@ -250,7 +215,8 @@ class EnglishQuestionFactory {
       activities.add(
         EnglishActivity(
           id: 'l${lesson.number}-write-$key',
-          type: EnglishActivityType.writeAnswer,
+          conceptKey: pair.english,
+        type: EnglishActivityType.writeAnswer,
           skill: EnglishSkill.writing,
           difficulty: wordCount <= 3
               ? EnglishDifficulty.medium
@@ -472,13 +438,9 @@ class EnglishQuestionFactory {
         .toList()
       ..shuffle(random);
 
+    // Solo usamos distractores reales de la MISMA lección. Nunca agregamos
+    // respuestas genéricas como “Otra opción”, porque no evalúan inglés.
     final options = <String>[correct, ...unique.take(3)];
-
-    while (options.length < 4) {
-      final filler = _genericDistractors[options.length - 1];
-      if (!options.contains(filler)) options.add(filler);
-    }
-
     options.shuffle(random);
     return options;
   }
@@ -490,6 +452,21 @@ class EnglishQuestionFactory {
       ..shuffle(random);
 
     return alternatives.isEmpty ? 'Una traducción diferente' : alternatives.first;
+  }
+
+
+  bool _supportsStructurePractice(String phrase, List<String> words) {
+    if (words.length < 3 || words.length > 9) return false;
+
+    final normalized = phrase.trim().toLowerCase();
+    final startsLikeSentence = RegExp(
+      r"^(i|you|he|she|it|we|they|what|where|when|how|do|does|is|are|am|have|has|let|good|nice)\b",
+    ).hasMatch(normalized);
+
+    // Ordenar/completar se reserva para frases y estructuras. Expresiones
+    // nominales cortas como “a university” o “North America” se practican
+    // como vocabulario, no como ejercicios gramaticales artificiales.
+    return startsLikeSentence || phrase.contains('?') || phrase.contains('!');
   }
 
   int _blankIndex(List<String> words) {
@@ -505,69 +482,6 @@ class EnglishQuestionFactory {
         .toList();
   }
 
-  String _cleanCell(String value) {
-    return value
-        .replaceAll(RegExp(r'\s+'), ' ')
-        .replaceAll(RegExp(r'^[•·*\-–—]+\s*'), '')
-        .trim();
-  }
-
-  bool _validPair(String english, String spanish) {
-    if (english.isEmpty || spanish.isEmpty) return false;
-    if (english == spanish) return false;
-    if (english.length < 2 || spanish.length < 2) return false;
-    if (english.length > 92 || spanish.length > 110) return false;
-    if (RegExp(r'^\d+[.)]?$').hasMatch(english)) return false;
-    if (RegExp(r'^\d+[.)]?$').hasMatch(spanish)) return false;
-    if (_headingLike(english) || _headingLike(spanish)) return false;
-    if (!_containsLetter(english) || !_containsLetter(spanish)) return false;
-
-    return true;
-  }
-
-  bool _containsLetter(String value) {
-    return RegExp(r'[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]').hasMatch(value);
-  }
-
-  bool _headingLike(String value) {
-    final lower = value.toLowerCase();
-    const blocked = [
-      'vocabulario y frases',
-      'vocabulary and phrases',
-      'diálogo',
-      'dialogue',
-      'lesson',
-      'lección',
-      'contenido',
-    ];
-
-    return blocked.any((item) => lower == item) ||
-        lower.startsWith('página ') ||
-        lower.startsWith('page ');
-  }
-
-  bool _looksSpanish(String value) {
-    final lower = value.toLowerCase();
-    const markers = [
-      ' el ',
-      ' la ',
-      ' los ',
-      ' las ',
-      ' de ',
-      ' que ',
-      ' estoy ',
-      ' eres ',
-      ' gracias',
-      'hola',
-      'buenos',
-      '¿',
-      '¡',
-    ];
-
-    return RegExp(r'[áéíóúüñ¿¡]').hasMatch(lower) ||
-        markers.any((item) => ' $lower '.contains(item));
-  }
-
   int _stableHash(String value) {
     var hash = 2166136261;
 
@@ -579,219 +493,5 @@ class EnglishQuestionFactory {
     return hash;
   }
 
-  static const _genericDistractors = [
-    'Otra opción',
-    'Ninguna de las anteriores',
-    'No corresponde',
-  ];
 }
 
-const _fallbackPairs = <int, List<EnglishVocabularyPair>>{
-  1: [
-    EnglishVocabularyPair(english: 'Hello', spanish: 'Hola'),
-    EnglishVocabularyPair(english: 'Welcome', spanish: 'Bienvenido'),
-    EnglishVocabularyPair(english: 'Good morning', spanish: 'Buenos días'),
-    EnglishVocabularyPair(english: 'Nice to meet you', spanish: 'Mucho gusto'),
-    EnglishVocabularyPair(english: 'What is your name?', spanish: '¿Cuál es tu nombre?'),
-    EnglishVocabularyPair(english: 'Where are you from?', spanish: '¿De dónde eres?'),
-  ],
-  2: [
-    EnglishVocabularyPair(english: 'How are you?', spanish: '¿Cómo estás?'),
-    EnglishVocabularyPair(english: 'I am fine', spanish: 'Estoy bien'),
-    EnglishVocabularyPair(english: 'I am happy', spanish: 'Estoy feliz'),
-    EnglishVocabularyPair(english: 'I am tired', spanish: 'Estoy cansado'),
-    EnglishVocabularyPair(english: 'I am worried', spanish: 'Estoy preocupado'),
-  ],
-  3: [
-    EnglishVocabularyPair(english: 'I', spanish: 'Yo'),
-    EnglishVocabularyPair(english: 'You', spanish: 'Tú'),
-    EnglishVocabularyPair(english: 'He', spanish: 'Él'),
-    EnglishVocabularyPair(english: 'She', spanish: 'Ella'),
-    EnglishVocabularyPair(english: 'It', spanish: 'Eso'),
-  ],
-  4: [
-    EnglishVocabularyPair(english: 'We', spanish: 'Nosotros'),
-    EnglishVocabularyPair(english: 'You', spanish: 'Ustedes'),
-    EnglishVocabularyPair(english: 'They', spanish: 'Ellos'),
-  ],
-  5: [
-    EnglishVocabularyPair(english: 'I am', spanish: 'Yo soy / estoy'),
-    EnglishVocabularyPair(english: 'You are', spanish: 'Tú eres / estás'),
-    EnglishVocabularyPair(english: 'He is', spanish: 'Él es / está'),
-    EnglishVocabularyPair(english: 'We are', spanish: 'Nosotros somos / estamos'),
-  ],
-  6: [
-    EnglishVocabularyPair(english: 'I am not', spanish: 'Yo no soy / estoy'),
-    EnglishVocabularyPair(english: 'Are you?', spanish: '¿Eres / estás?'),
-    EnglishVocabularyPair(english: 'Is she?', spanish: '¿Ella es / está?'),
-  ],
-  7: [
-    EnglishVocabularyPair(english: 'One', spanish: 'Uno'),
-    EnglishVocabularyPair(english: 'Two', spanish: 'Dos'),
-    EnglishVocabularyPair(english: 'Three', spanish: 'Tres'),
-    EnglishVocabularyPair(english: 'Four', spanish: 'Cuatro'),
-    EnglishVocabularyPair(english: 'Five', spanish: 'Cinco'),
-  ],
-  8: [
-    EnglishVocabularyPair(english: 'Eleven', spanish: 'Once'),
-    EnglishVocabularyPair(english: 'Twelve', spanish: 'Doce'),
-    EnglishVocabularyPair(english: 'Fifteen', spanish: 'Quince'),
-    EnglishVocabularyPair(english: 'Twenty', spanish: 'Veinte'),
-  ],
-  9: [
-    EnglishVocabularyPair(english: 'Red', spanish: 'Rojo'),
-    EnglishVocabularyPair(english: 'Blue', spanish: 'Azul'),
-    EnglishVocabularyPair(english: 'Green', spanish: 'Verde'),
-    EnglishVocabularyPair(english: 'Yellow', spanish: 'Amarillo'),
-    EnglishVocabularyPair(english: 'Black', spanish: 'Negro'),
-  ],
-  10: [
-    EnglishVocabularyPair(english: 'Mother', spanish: 'Madre'),
-    EnglishVocabularyPair(english: 'Father', spanish: 'Padre'),
-    EnglishVocabularyPair(english: 'Sister', spanish: 'Hermana'),
-    EnglishVocabularyPair(english: 'Brother', spanish: 'Hermano'),
-    EnglishVocabularyPair(english: 'Grandparents', spanish: 'Abuelos'),
-  ],
-  11: [
-    EnglishVocabularyPair(english: 'a book', spanish: 'un libro'),
-    EnglishVocabularyPair(english: 'an apple', spanish: 'una manzana'),
-    EnglishVocabularyPair(english: 'a university', spanish: 'una universidad'),
-  ],
-  12: [
-    EnglishVocabularyPair(english: 'I have a car', spanish: 'Tengo un carro'),
-    EnglishVocabularyPair(english: 'She has a dog', spanish: 'Ella tiene un perro'),
-    EnglishVocabularyPair(english: 'Do you have time?', spanish: '¿Tienes tiempo?'),
-  ],
-  13: [
-    EnglishVocabularyPair(english: 'Tall', spanish: 'Alto'),
-    EnglishVocabularyPair(english: 'Short', spanish: 'Bajo'),
-    EnglishVocabularyPair(english: 'Young', spanish: 'Joven'),
-    EnglishVocabularyPair(english: 'Beautiful', spanish: 'Hermoso'),
-  ],
-  14: [
-    EnglishVocabularyPair(english: 'Head', spanish: 'Cabeza'),
-    EnglishVocabularyPair(english: 'Eyes', spanish: 'Ojos'),
-    EnglishVocabularyPair(english: 'Hands', spanish: 'Manos'),
-    EnglishVocabularyPair(english: 'Feet', spanish: 'Pies'),
-  ],
-  15: [
-    EnglishVocabularyPair(english: 'What time is it?', spanish: '¿Qué hora es?'),
-    EnglishVocabularyPair(english: 'It is seven o’clock', spanish: 'Son las siete'),
-    EnglishVocabularyPair(english: 'Half past eight', spanish: 'Ocho y media'),
-  ],
-  16: [
-    EnglishVocabularyPair(english: 'Play soccer', spanish: 'Jugar fútbol'),
-    EnglishVocabularyPair(english: 'Go swimming', spanish: 'Ir a nadar'),
-    EnglishVocabularyPair(english: 'Practice tennis', spanish: 'Practicar tenis'),
-  ],
-  17: [
-    EnglishVocabularyPair(english: 'Bigger than', spanish: 'Más grande que'),
-    EnglishVocabularyPair(english: 'The fastest', spanish: 'El más rápido'),
-    EnglishVocabularyPair(english: 'More interesting', spanish: 'Más interesante'),
-  ],
-  18: [
-    EnglishVocabularyPair(english: 'Many apples', spanish: 'Muchas manzanas'),
-    EnglishVocabularyPair(english: 'Much water', spanish: 'Mucha agua'),
-    EnglishVocabularyPair(english: 'A little milk', spanish: 'Un poco de leche'),
-  ],
-  19: [
-    EnglishVocabularyPair(english: 'I wish you luck', spanish: 'Te deseo suerte'),
-    EnglishVocabularyPair(english: 'Happy birthday', spanish: 'Feliz cumpleaños'),
-    EnglishVocabularyPair(english: 'Congratulations', spanish: 'Felicitaciones'),
-  ],
-  20: [
-    EnglishVocabularyPair(english: 'Dog', spanish: 'Perro'),
-    EnglishVocabularyPair(english: 'Cat', spanish: 'Gato'),
-    EnglishVocabularyPair(english: 'Bird', spanish: 'Pájaro'),
-    EnglishVocabularyPair(english: 'Rabbit', spanish: 'Conejo'),
-  ],
-  21: [
-    EnglishVocabularyPair(english: 'I work every day', spanish: 'Trabajo todos los días'),
-    EnglishVocabularyPair(english: 'She studies English', spanish: 'Ella estudia inglés'),
-    EnglishVocabularyPair(english: 'They live in Bogotá', spanish: 'Ellos viven en Bogotá'),
-  ],
-  22: [
-    EnglishVocabularyPair(english: 'Spain', spanish: 'España'),
-    EnglishVocabularyPair(english: 'France', spanish: 'Francia'),
-    EnglishVocabularyPair(english: 'Germany', spanish: 'Alemania'),
-    EnglishVocabularyPair(english: 'Italy', spanish: 'Italia'),
-  ],
-  23: [
-    EnglishVocabularyPair(english: 'Have breakfast', spanish: 'Desayunar'),
-    EnglishVocabularyPair(english: 'A cup of coffee', spanish: 'Una taza de café'),
-    EnglishVocabularyPair(english: 'Toast and eggs', spanish: 'Tostadas y huevos'),
-  ],
-  24: [
-    EnglishVocabularyPair(english: 'Apple', spanish: 'Manzana'),
-    EnglishVocabularyPair(english: 'Orange', spanish: 'Naranja'),
-    EnglishVocabularyPair(english: 'Strawberry', spanish: 'Fresa'),
-    EnglishVocabularyPair(english: 'Watermelon', spanish: 'Sandía'),
-  ],
-  25: [
-    EnglishVocabularyPair(english: 'Carrot', spanish: 'Zanahoria'),
-    EnglishVocabularyPair(english: 'Onion', spanish: 'Cebolla'),
-    EnglishVocabularyPair(english: 'Tomato', spanish: 'Tomate'),
-    EnglishVocabularyPair(english: 'Potato', spanish: 'Papa'),
-  ],
-  26: [
-    EnglishVocabularyPair(english: 'How much is it?', spanish: '¿Cuánto cuesta?'),
-    EnglishVocabularyPair(english: 'I would like this one', spanish: 'Quisiera este'),
-    EnglishVocabularyPair(english: 'It is too expensive', spanish: 'Es demasiado caro'),
-  ],
-  27: [
-    EnglishVocabularyPair(english: 'What do you do?', spanish: '¿A qué te dedicas?'),
-    EnglishVocabularyPair(english: 'I am a teacher', spanish: 'Soy profesor'),
-    EnglishVocabularyPair(english: 'I work in an office', spanish: 'Trabajo en una oficina'),
-  ],
-  28: [
-    EnglishVocabularyPair(english: 'North America', spanish: 'Norteamérica'),
-    EnglishVocabularyPair(english: 'South America', spanish: 'Sudamérica'),
-    EnglishVocabularyPair(english: 'United States', spanish: 'Estados Unidos'),
-    EnglishVocabularyPair(english: 'Colombia', spanish: 'Colombia'),
-  ],
-  29: [
-    EnglishVocabularyPair(english: 'Where am I?', spanish: '¿Dónde estoy?'),
-    EnglishVocabularyPair(english: 'I am at the bank', spanish: 'Estoy en el banco'),
-    EnglishVocabularyPair(english: 'The hospital is nearby', spanish: 'El hospital está cerca'),
-  ],
-  30: [
-    EnglishVocabularyPair(english: 'Bedroom', spanish: 'Habitación'),
-    EnglishVocabularyPair(english: 'Living room', spanish: 'Sala'),
-    EnglishVocabularyPair(english: 'Bed', spanish: 'Cama'),
-    EnglishVocabularyPair(english: 'Sofa', spanish: 'Sofá'),
-  ],
-  31: [
-    EnglishVocabularyPair(english: 'I am reading', spanish: 'Estoy leyendo'),
-    EnglishVocabularyPair(english: 'She is cooking', spanish: 'Ella está cocinando'),
-    EnglishVocabularyPair(english: 'They are playing', spanish: 'Ellos están jugando'),
-  ],
-  32: [
-    EnglishVocabularyPair(english: 'On the table', spanish: 'Sobre la mesa'),
-    EnglishVocabularyPair(english: 'Under the chair', spanish: 'Debajo de la silla'),
-    EnglishVocabularyPair(english: 'Next to the door', spanish: 'Al lado de la puerta'),
-  ],
-  33: [
-    EnglishVocabularyPair(english: 'Doctor', spanish: 'Médico'),
-    EnglishVocabularyPair(english: 'Engineer', spanish: 'Ingeniero'),
-    EnglishVocabularyPair(english: 'Nurse', spanish: 'Enfermero'),
-    EnglishVocabularyPair(english: 'Chef', spanish: 'Cocinero'),
-  ],
-  34: [
-    EnglishVocabularyPair(english: 'My house', spanish: 'Mi casa'),
-    EnglishVocabularyPair(english: 'Your book', spanish: 'Tu libro'),
-    EnglishVocabularyPair(english: 'Her car', spanish: 'El carro de ella'),
-    EnglishVocabularyPair(english: 'Their children', spanish: 'Sus hijos'),
-  ],
-  35: [
-    EnglishVocabularyPair(english: 'Small', spanish: 'Pequeño'),
-    EnglishVocabularyPair(english: 'Medium', spanish: 'Mediano'),
-    EnglishVocabularyPair(english: 'Large', spanish: 'Grande'),
-    EnglishVocabularyPair(english: 'Extra large', spanish: 'Extra grande'),
-  ],
-  36: [
-    EnglishVocabularyPair(english: 'Monday', spanish: 'Lunes'),
-    EnglishVocabularyPair(english: 'Wednesday', spanish: 'Miércoles'),
-    EnglishVocabularyPair(english: 'Friday', spanish: 'Viernes'),
-    EnglishVocabularyPair(english: 'What day is today?', spanish: '¿Qué día es hoy?'),
-  ],
-};

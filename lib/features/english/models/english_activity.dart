@@ -5,6 +5,7 @@ enum EnglishActivityType {
   orderWords,
   listenChoice,
   writeAnswer,
+  speakAnswer,
 }
 
 enum EnglishSkill {
@@ -14,6 +15,7 @@ enum EnglishSkill {
   listening,
   writing,
   conversation,
+  speaking,
 }
 
 enum EnglishDifficulty {
@@ -38,6 +40,7 @@ class EnglishActivity {
   final String? speechText;
   final int seconds;
   final int basePoints;
+  final String conceptKey;
 
   const EnglishActivity({
     required this.id,
@@ -55,6 +58,7 @@ class EnglishActivity {
     this.speechText,
     this.seconds = 30,
     this.basePoints = 10,
+    this.conceptKey = '',
   });
 
   bool get isChoice =>
@@ -84,6 +88,7 @@ class EnglishActivity {
     String? speechText,
     int? seconds,
     int? basePoints,
+    String? conceptKey,
   }) {
     return EnglishActivity(
       id: id ?? this.id,
@@ -101,6 +106,7 @@ class EnglishActivity {
       speechText: speechText ?? this.speechText,
       seconds: seconds ?? this.seconds,
       basePoints: basePoints ?? this.basePoints,
+      conceptKey: conceptKey ?? this.conceptKey,
     );
   }
 }
